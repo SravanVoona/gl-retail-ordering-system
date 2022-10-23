@@ -1,87 +1,6 @@
 {% extends "header.html"  %}
 {% block content %}
-<div class="page-title fix"><!--Start Title-->
-	<div class="overlay section">
-		<h2>Product Details</h2>
-	</div>
-</div><!--End Title-->
-<section class="product-page page fix"><!--Start Product Details Area-->
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-6">
-				<div class="details-pro-tab">
-			<!-- Tab panes -->
-					<div class="tab-content details-pro-tab-content">
-						<div class="tab-pane fade in active" id="image-1">
-							<div class="simpleLens-big-image-container">
-								<a class="simpleLens-lens-image" data-lens-image="{{ data.image }}">
-									<img src="{{ data.image }}" alt="" class="simpleLens-big-image" width="600" height="500">
-								</a>
-							</div>
-						</div>
-					</div>
-					<!-- Nav tabs -->
-				</div>
-			</div>
-			<div class="col-sm-6">
-				<div class="shop-details">
-					<!-- Product Name -->
-					<h2>{{data.product_name}}</h2>
-					<!-- Product Ratting -->
-					<div class="pro-ratting">
-						<i class="on fa fa-star"></i>
-						<i class="on fa fa-star"></i>
-						<i class="on fa fa-star"></i>
-						<i class="on fa fa-star"></i>
-						<i class="on fa fa-star-half-o"></i>
-					</div>
-					<h3><span>&#8377 {{data.regular_price}}</span>&#8377 {{data.discounted_price}}</h3>
-					<h4>10 Reviews</h4>
-					<h5>Availability - <span>{{data.stock}}</span></h5>
-					<h6>QUICK OVERVIEW</h6>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco aboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepte.</p>
-					<div class="select-menu fix">
-						<div class="sort fix">
-							<h4>SIZE</h4>
-							<select>
-								<option value="3">3</option>
-								<option value="4">4</option>
-								<option value="5">5</option>
-								<option value="6">6</option>
-							</select>
-						</div>
-						<div class="sort fix">
-							<h4>Color</h4>
-							<select>
-								<option value="pink">pink</option>
-								<option value="red">red</option>
-								<option value="blue">blue</option>
-							</select>
-						</div>
-						<div class="sort fix">
-							<h4>Qty</h4>
-							<select>
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-								<option value="4">4</option>
-							</select>
-						</div>
-					</div>
-					<div class="review">
-						<textarea rows="4" placeholder="Write Your Review..."></textarea>
-					</div>
-					<div class="action-btn">
-						<a href="/addToCartProduct?productId={{request.args.get('productId')}}&subProductId={{data.weight}}"><i class="fa fa-shopping-cart"></i></a>
-						<a href="#"><i class="fa fa-heart-o"></i></a>
-						<a href="" ><i class="fa fa-refresh"></i></a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</section><!--End Product Details Area-->
-<!--
+
 <div class="row" id="display">
 <div class="col-md-3">
 	<div id="productName">
@@ -166,60 +85,8 @@
 
 	</div>
 
-</div>-->
+</div>
 
-<div class="featured-product section fix"><!--start Featured Product Area-->
-	<div class="container">
-		<div class="row">
-			<div class="section-title">
-				<h2 align="center">Recommended Items</h2>
-				<div class="underline"></div>
-			</div>
-			<div class="col-sm-12">
-				<!-- Featured slider Area Start -->
-				<div class="feature-pro-slider owl-carousel">
-					{% for data in recommendedProducts %}
-					{% for row in data %}
-					<!-- Single Product Start -->
-					<div class="product-item fix">
-						<div class="product-img-hover">
-							<!-- Product image -->
-							<a href="/productDescription?productId={{row.productid}}" class="pro-image fix"><img src="{{ row.image }}" alt="featured" /></a>
-							<!-- Product action Btn -->
-							<div class="product-action-btn">
-								<a class="quick-view" href="#"><i class="fa fa-search"></i></a>
-								<a class="favorite" href="#"><i class="fa fa-heart-o"></i></a>
-								<a class="add-cart" href="#"><i class="fa fa-shopping-cart"></i></a>
-							</div>
-						</div>
-						<div class="pro-name-price-ratting">
-							<!-- Product Name -->
-							<div class="pro-name">
-								<a href="product-details.html">{{ row.description }}</a>
-							</div>
-							<!-- Product Ratting -->
-							<div class="pro-ratting">
-								<i class="on fa fa-star"></i>
-								<i class="on fa fa-star"></i>
-								<i class="on fa fa-star"></i>
-								<i class="on fa fa-star"></i>
-								<i class="on fa fa-star-half-o"></i>
-							</div>
-							<!-- Product Price -->
-							<div class="pro-price fix">
-								<p><span class="old">&#8377 {{data.regular_price}}</span><span class="new">{{data.discounted_price}}</span></p>
-							</div>
-						</div>
-					</div><!-- Single Product End -->
-					{% endfor %}
-					{% endfor %}
-				</div><!-- Featured slider Area End -->	
-			</div>
-		</div>
-	</div>
-</div><!--End Featured Product Area-->
-
-<!--
 <div class="row">
 	<div class="col-md-12">
 		<br>
@@ -232,7 +99,7 @@
     <div class="product-card">
 
         <div class="product-image">
-<!--            <span class="discount-tag">15% off</span>
+<!--            <span class="discount-tag">15% off</span>-->
 			<a href="/productDescription?productId={{row.productid}}">
 			<img src="{{ row.image }}", style="width: 150px;"/>
 			</a>
@@ -259,7 +126,7 @@
 	</div>
         </div>
 		</div>
-</div>-->
+</div>
 
 
 {% endblock content %}
