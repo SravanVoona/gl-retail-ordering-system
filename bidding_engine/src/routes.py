@@ -73,7 +73,8 @@ def get_auction():
   try:
     product_id = int(request.args.get('productId'))
     auction_info = models.extract_auction_info(product_id, mongo_db_conn)
-    auction_info.pop('_id')
+    if auction_info:
+      auction_info.pop('_id')
     return jsonify(auction_info)
   except Exception as e:
     return jsonify({"status": 400, "err": str(e)})

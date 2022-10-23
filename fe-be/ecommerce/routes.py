@@ -69,8 +69,16 @@ def register():
 def root():
     loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
     session['firstname'] = firstName
-    allProductDetails = getAllProducts()
-    allProductsMassagedDetails = massageItemData(allProductDetails)
+    bidding_api_url = loadapi['biddingEngineUrl'] + '/auction_products'
+    
+    response = requests.get(bidding_api_url)
+    prod_json = response.json()
+    #print(prod_json)
+    bidProductsDetails = getRecommendedProducts(prod_json)
+    bidProductsMassagedDetails = massageItemData(bidProductsDetails)
+    
+    #allProductDetails = getAllProducts()
+    #allProductsMassagedDetails = massageItemData(allProductDetails)
     categoryData = getCategoryDetails()
 
     if loggedIn:
@@ -86,12 +94,12 @@ def root():
 
         recommendedProducts = getRecommendedProducts(list)
         recommendedProductsMassagedDetails = massageItemData(recommendedProducts)
-        return render_template('index.html', itemData=allProductsMassagedDetails, loggedIn=loggedIn,
+        return render_template('index.html', itemData=bidProductsMassagedDetails, loggedIn=loggedIn,
                                firstName=firstName,
                                productCountinKartForGivenUser=productCountinKartForGivenUser,
                                categoryData=categoryData, recommendedProducts=recommendedProductsMassagedDetails)
     else:
-        return render_template('index.html', itemData=allProductsMassagedDetails, loggedIn=loggedIn,
+        return render_template('index.html', itemData=bidProductsMassagedDetails, loggedIn=loggedIn,
                                firstName=firstName,
                                productCountinKartForGivenUser=productCountinKartForGivenUser,
                                categoryData=categoryData)
@@ -121,7 +129,16 @@ def productDescription():
     productid = request.args.get('productId')
     productDetailsByProductId = getProductDetails(productid)
 
+    # get auction Information
+    api_url = loadapi['biddingEngineUrl'] + '/auction'
+    params = {"productId": productid}
+    response = requests.get(api_url, params=params)
+    response_json = response.json()
+    auction_info = dict(response_json)
+    biddableProduct = True if len(auction_info) > 0 else False
+    #print(auction_info)
     
+    # get recommended Items
     api_url = loadapi['recommendationServiceUrl']
     products = {"product_id": productid}
     response = requests.post(api_url, json=products)
@@ -134,11 +151,14 @@ def productDescription():
 
     recommendedProducts = getRecommendedProducts(list)
     recommendedProductsMassagedDetails = massageItemData(recommendedProducts)
+    print(type(productDetailsByProductId))
 
     return render_template("productDescription.html", data=productDetailsByProductId, loggedIn=loggedIn,
                            firstName=firstName, productCountinKartForGivenUser=noOfItems,
-                           recommendedProducts=recommendedProductsMassagedDetails
-                           #recommendedProducts = []
+                           recommendedProducts=recommendedProductsMassagedDetails,
+                           biddableProduct = biddableProduct,
+                           auctionDetails = auction_info,
+                           biddingEngineUrl = loadapi['biddingEngineUrl'] + '/create_bid'
                            )
 
 

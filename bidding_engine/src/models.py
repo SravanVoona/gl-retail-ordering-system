@@ -46,6 +46,8 @@ def extract_auction_info(product_id, db_conn):
     auction_dic = dict()
     for row in auction_info:
         auction_dic = dict(row)
+        current_max_bid = highest_bidding_amount(auction_dic['auction_id'], db_conn)
+        auction_dic['current_max_bid'] = current_max_bid if current_max_bid > 0 else auction_dic['min_amount']
     return auction_dic
 
 
@@ -138,7 +140,8 @@ def extract_user_bids (user_id, db_conn):
         bid_dict['product_id'] = auction_info_dict[bid['auction_id']]['product_id']
         bid_dict['seller_id'] = auction_info_dict[bid['auction_id']]['seller_id']
         user_bids.append(bid_dict) 
-    return user_bids
+        
+    return sorted(user_bids, key=lambda x: x['timestamp'], reverse=True)
             
         
         
