@@ -1,8 +1,0 @@
-mongodb:
-  connection_string: 'mongodb://localhost:27017/'
-  database: 'bidding_engine'
-  tables: ['auction', 'bidding']
-bidding_service:
-  interval: 5
-
-

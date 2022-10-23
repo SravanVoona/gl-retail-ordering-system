@@ -87,7 +87,7 @@
 	<div id="productName">
 		<h1>{{data.product_name}}</h1>
 	</div>
-	<img src="{{ data.image }}", style="width: 280px;"/>
+	<img src="{{ data.image }}"/>
 </div>
 
 	<div  class="col-md-9">
@@ -99,7 +99,7 @@
 		<table id="descriptionTable">
 			<tr>
 				<td>Name</td>
-				<td>{{data.product_name}}</td>
+				<td>{{data.description}}</td>
 			</tr>
 			<tr>
 				<td>Regular Price</td>
@@ -121,48 +121,12 @@
 		<h2>Description</h2>
 		<p>{{data['description']}}</p>
 	</div>
-	{% if biddableProduct %}
-	<div id="biddingDetails">
-		<h2>Bidding Details</h2>
-		<table id="biddingDetails">
-			<tr>
-				<td>Status</td>
-				<td>{{auctionDetails['status']}}</td>
-			</tr>
-			<tr>
-				<td>Start Time</td>
-				<td>{{auctionDetails['start_time']}}</td>
-			</tr>
-			<tr>
-				<td>End Time</td>
-				<td>{{auctionDetails['end_time']}}</td>
-			</tr>
-			<tr>
-				<td>Current Maximum Bid</td>
-				<td>&#8377 {{auctionDetails['current_max_bid']}}</td>
-			</tr>
-			<tr>
-				<td>Increment</td>
-				<td>&#8377 {{auctionDetails['increment']}}</td>
-			</tr>
-		</table>
-	</div>
-	<div id="bidNow">
-		<p><u>
-			<a href="{{biddingEngineUrl}}"><input type="submit" value="Bid Now"> </a>
-			<input type="hidden" id="productId" name="productId" value="{{auctionDetails['product_id']}}">
-		</u>
-		</p>
-	</div>
-	
-	{% else %}
-	<div id="addToCart">
+		<div id="addToCart">
 		<p><u>
 			<a href="/addToCartProduct?productId={{request.args.get('productId')}}&subProductId={{data.weight}}"><input type="submit" value="Add to Cart"> </a>
 		</u>
 		</p>
-	</div>
-	{% endif %}
+		</div>
 
 	</div>
 
@@ -234,7 +198,7 @@
         <div class="product-image">
 <!--            <span class="discount-tag">15% off</span>
 			<a href="/productDescription?productId={{row.productid}}">
-			<img src="{{ row.image }}", style="width: 150px;"/>
+			<img src="{{ row.image }}"/>
 			</a>
         </div>
 
