@@ -61,16 +61,30 @@ def create_bid():
   
 @app.route("/auction_products", methods = ['GET'])
 def get_auction_products():
+  try:
     auction_products = models.extract_auction_products(mongo_db_conn)
     return jsonify(auction_products)
+  except Exception as e:
+    return jsonify({"status": 400, "err": str(e)})
 
   
 @app.route("/auction", methods = ['GET'])
 def get_auction():
+  try:
     product_id = int(request.args.get('productId'))
     auction_info = models.extract_auction_info(product_id, mongo_db_conn)
     auction_info.pop('_id')
     return jsonify(auction_info)
+  except Exception as e:
+    return jsonify({"status": 400, "err": str(e)})
+  
+@app.route("/user_bids", methods = ['GET'])
+def get_user_bids():
+  try:
+    user_id = int(request.args.get('userId'))
+    return jsonify(models.extract_user_bids(user_id, mongo_db_conn))
+  except Exception as e:
+    return jsonify({"status": 400, "err": str(e)})
   
 
     

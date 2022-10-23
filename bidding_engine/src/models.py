@@ -115,9 +115,35 @@ def close_auction(auction_id, user_id, final_price, db_conn):
     # filter condition
     filter = { 'auction_id': auction_id }
     # Values to be updated.
-    newvalues = { "$set": { 'status': 'close', 'win_user': user_id, 'final_price': final_price } }
+    newvalues = { "$set": { 'status': 'close', 'winning_user': user_id, 'final_price': final_price } }
     # close the auction
     db_conn.auction.update_one(filter, newvalues)
+    
+    
+def extract_user_bids (user_id, db_conn):
+    bids = db_conn.bidding.find({'user_id': user_id})
+    auction_info_dict = dict()
+    user_bids = []
+    for bid in bids:
+        print(bid['auction_id'])
+        bid_dict = dict()
+        bid_dict['bidding_id'] = bid['bidding_id']
+        bid_dict['auction_id'] = bid['auction_id']
+        bid_dict['bid_amount'] = bid['bid_amount']
+        bid_dict['timestamp'] = bid['timestamp']
+        if bid['auction_id'] not in auction_info_dict:
+            auction_info = db_conn.auction.find({'auction_id': bid['auction_id']}).limit(1)
+            for auction in auction_info:
+                auction_info_dict[auction['auction_id']] = auction
+        bid_dict['product_id'] = auction_info_dict[bid['auction_id']]['product_id']
+        bid_dict['seller_id'] = auction_info_dict[bid['auction_id']]['seller_id']
+        user_bids.append(bid_dict) 
+    return user_bids
+            
+        
+        
+        
+        
     
     
         
