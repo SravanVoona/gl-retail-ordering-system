@@ -324,6 +324,15 @@ def extractOrderdetails(request, totalsum):
     email = request.form['email']
     address = request.form['address']
     phone = request.form['phone']
+    city = request.form['city']
+    state = request.form['state']
+    cctype = request.form['cardtype']
+    ccnumber = request.form['cardnumber']
+    cardname = request.form['cardname']
+    expmonth = request.form['expmonth']
+    expyear = request.form['expyear']
+    provider = request.form['provider']
+    cvv = request.form['cvv']
     orderdate = datetime.utcnow()
     userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
     userId = userId[0]
@@ -339,10 +348,12 @@ def extractOrderdetails(request, totalsum):
     #  products table
     addOrderedproducts(userId, orderid[0])
     # add transaction details to the table
-    updateSalestransaction(totalsum, "123412341234", orderid[0], "amex")
+    updateSalestransaction(totalsum, ccnumber, orderid[0], cctype)
 
+    # remove ordered products from cart after transaction is successful
+    removeordprodfromcart(userId)
     # sendtextconfirmation(phone,fullname,orderid)
-    return (email, fullname, orderid, address, fullname, phone)
+    return (email, fullname, orderid, address, fullname, phone, provider)
 
 
 # adds data to orderdproduct table
@@ -377,6 +388,6 @@ def updateSalestransaction(totalsum, ccnumber, orderid, cctype):
 
 # sends email for order confirmation
 
-def sendEmailconfirmation(email, username, ordernumber, phonenumber):
+def sendEmailconfirmation(email, username, ordernumber, phonenumber, provider):
     return 1
 
