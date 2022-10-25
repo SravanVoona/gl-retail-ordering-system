@@ -36,10 +36,12 @@
 						<i class="on fa fa-star-half-o"></i>
 					</div>
 					<h3><span>&#8377 {{data.regular_price}}</span>&#8377 {{data.discounted_price}}</h3>
-					<h4>10 Reviews</h4>
+					<h4>{{data.product_rating}}</h4>
 					<h5>Availability - <span>{{data.stock}}</span></h5>
+					<h5>Brand - <span>{{data.brand}}</span></h5>
 					<h6>QUICK OVERVIEW</h6>
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco aboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepte.</p>
+					<p>Weight-{{data.weight}}</p>
+					<p>sub_category_name-{{data.sub_category_name}}</p>
 					<div class="select-menu fix">
 						<div class="sort fix">
 							<h4>SIZE</h4>
@@ -70,6 +72,9 @@
 					</div>
 					<div class="review">
 						<textarea rows="4" placeholder="Write Your Review..."></textarea>
+					</div>
+					<div class="pro-ratting">
+						<h4>{{data.product_rating}}</h4>
 					</div>
 					<div class="action-btn">
 						<a href="/addToCartProduct?productId={{request.args.get('productId')}}&subProductId={{data.weight}}"><i class="fa fa-shopping-cart"></i></a>

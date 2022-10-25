@@ -12,7 +12,7 @@ $(document).ready(function($){
 		directionNav: false,
 		animSpeed: 500,
 		slices: 18,
-		pauseTime: 1111115000,
+		pauseTime: 7000,
 		pauseOnHover: false,
 		controlNav: true,
 		prevText: '<i class="fa fa-angle-left nivo-prev-icon"></i>',

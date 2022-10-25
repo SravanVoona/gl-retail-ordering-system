@@ -16,7 +16,48 @@
 {% endwith %}
 </div>
 
-
+<!-- HOME SLIDER -->
+<div class="slider-wrap home-1-slider">
+	<div id="mainSlider" class="nivoSlider slider-image">
+		<img src="static/images/images-5.jpg" alt="main slider" title="#htmlcaption1"/>
+		<img src="static/images/istockphoto-1180931397-612x612.jpg" alt="main slider" title="#htmlcaption2" width="1600" height="750"/>
+		<img src="static/images/b.png" alt="main slider" title="#htmlcaption2" />
+		<img src="static/images/images.jpg" alt="main slider" title="#htmlcaption2" />
+	</div>
+	<div id="htmlcaption1" class="nivo-html-caption slider-caption-1">
+		<div class="slider-progress"></div>							
+		<div class="slide1-text slide-text">
+			<div class="middle-text">
+				<div class="cap-title wow slideInRight" data-wow-duration=".9s" data-wow-delay="0s">
+					<h1>Exclusive Jewelry</h1>
+				</div>
+				<div class="cap-dec wow slideInRight" data-wow-duration="1.3s" data-wow-delay="0s">
+					<h2>to express personality</h2>
+				</div>	
+				<div class="cap-readmore wow fadeInUpBig" data-wow-duration="1.5s" data-wow-delay="0s">
+					<a href="#">Shop Now</a>
+				</div>	
+			</div>	
+		</div>						
+	</div>
+	<div id="htmlcaption2" class="nivo-html-caption slider-caption-2">
+		<div class="slider-progress"></div>					
+		<div class="slide2-text slide-text">
+			<div class="middle-text">
+				<div class="cap-title wow bounceInDown" data-wow-duration=".9s" data-wow-delay="0s">
+					<h1>Exclusive Jewelry</h1>
+				</div>
+				<div class="cap-dec wow bounceInRight" data-wow-duration="1.5s" data-wow-delay="0s">
+					<h2>to express personality</h2>
+				</div>	
+				<div class="cap-readmore wow bounceInUp" data-wow-duration="1.3s" data-wow-delay=".5s">
+					<a href="#">Shop Now</a>
+				</div>										
+			</div>										
+		</div>
+	</div>
+</div>
+<!-- HOME SLIDER -->
 <!--{% with messages = get_flashed_messages() %}-->
 <!--  {% if messages %}-->
 <!--    <ul class=flashes>-->
@@ -26,7 +67,7 @@
 <!--    </ul>-->
 <!--  {% endif %}-->
 <!--{% endwith %}-->
-	<div class="row">
+	<!--<div class="row">
 		<div class="wrap_header2">
 			<div class="col-md-9">
 
@@ -66,7 +107,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div>-->
 
 	<div class="featured-product section fix"><!--start Featured Product Area-->
 		<div class="container">
@@ -99,11 +140,7 @@
 								</div>
 								<!-- Product Ratting -->
 								<div class="pro-ratting">
-									<i class="on fa fa-star"></i>
-									<i class="on fa fa-star"></i>
-									<i class="on fa fa-star"></i>
-									<i class="on fa fa-star"></i>
-									<i class="on fa fa-star-half-o"></i>
+									<i class="on fa fa-star">{{data.product_rating}}</i>
 								</div>
 								<!-- Product Price -->
 								<div class="pro-price fix">
@@ -118,6 +155,69 @@
 			</div>
 		</div>
 	</div><!--End Featured Product Area-->
+	
+
+	
+	<div class="banner-area fix"><!-- Product Offer Area Start -->
+		<div class="col-sm-6 sin-banner" style="background-repeat:no-repeat">
+			
+			<a href="">
+				<img src="static/images/b2.jpeg" alt="" width="675" height="420"/>
+				<div class="wrap">
+					<h2>Bracelets</h2>
+					<p></p>
+				</div>
+			</a>
+			
+		</div>
+		
+		<div class="col-sm-4 sin-banner">
+			<a href="#">
+				<img src="static/images/shopping1.webp" alt="" width="449" height="420" />
+				<div class="wrap">
+					<h2>Earrings</h2>
+					<p></p>
+				</div>
+			</a>
+		</div>
+		<div class="col-sm-2 hidden-xs sin-banner text-1">
+			<img src="static/images/4.jpeg" alt="" width="225" height="420" />
+			<div class="banner-text">
+				<h1><span>New</span></h1>
+				<h2>Arrivals</h2>
+				<p></p>
+				<a href="">Shop Now</a>
+			</div>
+		</div>
+		<div class="col-sm-2 hidden-xs sin-banner clear text-2">
+			<img src="static/images/4.jpeg" alt="" width="225" height="420" />
+			<div class="banner-text">
+				<h1>Sales <span>Up to</span></h1>
+				<h2><span>30%</span>off</h2>
+				<a href="#">Shop Now</a>
+			</div>
+		</div>
+		<div class="col-sm-6 sin-banner">
+			<a href="#">
+				<img src="static/images/a.webp" alt=""width="694" height="419" />
+				<div class="wrap">
+					<h2>Rings</h2>
+					<p></p>
+				</div>
+			</a>
+		</div>
+		<div class="col-sm-4 sin-banner">
+			<a href="#">
+				<img src="static/images/N.jpg" alt=""width="450" height="419" />
+				<div class="wrap">
+					<h2>Necklaces</h2>
+					<p></p>
+				</div>
+			</a>
+		</div>
+	</div>
+<!-- Product Offer Area End -->
+
 
 
 	{% if loggedIn %}
@@ -142,7 +242,7 @@
 								<div class="product-action-btn">
 									<a class="quick-view" href="#"><i class="fa fa-search"></i></a>
 									<a class="favorite" href="#"><i class="fa fa-heart-o"></i></a>
-									<a class="add-cart" href="#"><i class="fa fa-shopping-cart"></i></a>
+									<a class="add-cart" href="/addToCartProduct?productId={{request.args.get('productId')}}&subProductId={{data.weight}}"><i class="fa fa-shopping-cart"></i></a>
 								</div>
 							</div>
 							<div class="pro-name-price-ratting">
