@@ -9,6 +9,7 @@ from src import models
 import yaml
 from flask import jsonify
 from flask import request
+from datetime import datetime
 
 yaml_config = yaml.safe_load(open('config.yaml'))
 DATABASE_NAME = yaml_config['mongodb']['database'] 
@@ -53,8 +54,11 @@ def create_bid():
     else:
       product_id = None
     userId  = int(payload["userId"])
-    bid_amount = float(payload["bid_amount"])
-    timestamp = (payload["timestamp"])
+    bid_amount = float(payload["bidAmount"])
+    if "timestamp" in payload:
+      timestamp = (payload["timestamp"])
+    else:
+      timestamp = datetime.now().isoformat(sep='T',timespec='auto') # get Current datetime
     return jsonify(models.add_bid(auction_id, product_id, userId, bid_amount, timestamp, mongo_db_conn))
   except Exception as e:
     return jsonify({"status": 400, "err": str(e)})
