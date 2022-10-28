@@ -1,6 +1,22 @@
 {% extends "header.html"  %}
 {% block content %}
 
+<p> {{ error }} </p>
+<div class="row">
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                <span>{{ message }}</span>
+<!--                <button type="button" class="cancelbtn" data-dismiss="alert" aria-label="Close">-->
+<!--                <span aria-hidden="true">×</span> Hello Anirban-->
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+</div>
+
 <div class="row" id="display">
 <div class="col-md-3">
 	<div id="productName">
@@ -37,7 +53,7 @@
 				<td>{{data.sub_product_id}}</td>
 			</tr>
 		</table>
-		<h2>Description</h2>
+		<h3>Description</h3>
 		<p>{{data['description']}}</p>
 	</div>
 	{% if biddableProduct %}
@@ -66,14 +82,22 @@
 			</tr>
 		</table>
 	</div>
-	<div id="bidNow">
+	
+	<form action="/createBid">
+		<label for="Enter Bid Value">Enter Bid Value:</label><br>
+		<input type="number" id="bidAmount" name="bidAmount"><br>
+		<input type="submit" value="Bid Now">
+		<input type="hidden" id="productId" name="productId" value="{{auctionDetails['product_id']}}">
+	</form>
+	
+	<!--<div id="bidNow">
 		<p><u>
 			<a href="{{biddingEngineUrl}}"><input type="submit" value="Bid Now"> </a>
 			<input type="hidden" id="productId" name="productId" value="{{auctionDetails['product_id']}}">
 		</u>
 		</p>
-	</div>
-	
+	</div>-->
+
 	{% else %}
 	<div id="addToCart">
 		<p><u>

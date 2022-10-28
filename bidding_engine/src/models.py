@@ -46,6 +46,7 @@ def extract_auction_info(product_id, db_conn):
     auction_dic = dict()
     for row in auction_info:
         auction_dic = dict(row)
+        #print(auction_dic)
         current_max_bid = highest_bidding_amount(auction_dic['auction_id'], db_conn)
         auction_dic['current_max_bid'] = current_max_bid if current_max_bid > 0 else auction_dic['min_amount']
     return auction_dic
@@ -76,6 +77,7 @@ def add_auction(product_id, seller_id, min_amount, increment, start_time, end_ti
     return 'Auction Created'
 
 def add_bid(auction_id, product_id, user_id, bid_amount, timestamp, db_conn):
+    #print('add_bid')
     # get auction_id
     if auction_id is None:
         auction_info = extract_auction_info(product_id, db_conn)

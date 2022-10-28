@@ -565,3 +565,32 @@ def paymentSuccess():
     removeordprodfromcart(userId)
 
     return redirect(url_for('root'))
+
+
+@app.route("/createBid", methods = ["GET"])
+def createBid():
+    print("Create Bid")
+    if isUserLoggedIn():
+        userId = getUserId()
+        
+        # get auction Information
+        api_url = loadapi['biddingEngineUrl'] + '/create_bid'
+        productId = int(request.args.get('productId'))
+        bidAmount = float(request.args.get('bidAmount'))
+        payload = json.dumps({"productId": productId, "userId": userId, "bidAmount": bidAmount})
+        print(payload)
+        #response = requests.post(url = api_url, data=payload)
+        headers = {'Content-Type': 'application/json'}
+        response = requests.request("POST", api_url, headers=headers, data=payload)
+
+        #print(response.text)
+        if response.text == "Bid Created":
+            flash('Bid Created', 'success')
+        else:
+            flash(str(response.text), 'error')
+         
+        return redirect(url_for('productDescription', productId=productId))
+    else:
+        flash('please log in !!', 'success')
+        return redirect(url_for('root'))
+    

@@ -5,7 +5,7 @@ mysql_password: 'mysql'
 mysql_db: 'grocart'
 recommendationServiceUrl : 'http://127.0.0.1:8000/predict'
 userProductRecommendationServiceUrl : 'http://127.0.0.1:8000/predictuser'
-biddingEngineUrl: 'http://192.168.29.15:7000'
+biddingEngineUrl: 'http://192.168.29.215:7000'
 
 # Old Project 
 #mysql_host: 'ros.cqml2mhj7aba.us-east-1.rds.amazonaws.com'
