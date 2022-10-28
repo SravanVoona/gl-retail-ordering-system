@@ -380,3 +380,16 @@ def updateSalestransaction(totalsum, ccnumber, orderid, cctype):
 def sendEmailconfirmation(email, username, ordernumber, phonenumber):
     return 1
 
+
+#Get user specific ordered product details
+
+def getOrderedProducts(userId):
+    orderIDs = Order.query.with_entities(Order.orderid, Order.order_date).filter(Order.userid == userId).all()
+    orders = [x[0] for x in orderIDs]
+    orderedProducts = []
+
+    for i in orders:
+        oneProduct = OrderedProduct.query.filter(OrderedProduct.orderid == i).first()
+        if oneProduct: orderedProducts.append(oneProduct)
+
+    return (orderIDs, orderedProducts)
