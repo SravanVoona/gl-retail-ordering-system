@@ -13,8 +13,8 @@ import requests
 import yaml
 import razorpay
 
-loadapi = yaml.safe_load(open('/Users/theseus/Documents/GitHub/gl-retail-ordering-system-payment/fe-be/config.yaml'))
-payapi = yaml.safe_load(open('/Users/theseus/Documents/GitHub/gl-retail-ordering-system-payment/fe-be/api.yaml'))
+loadapi = yaml.safe_load(open('config.yaml'))
+payapi = yaml.safe_load(open('api.yaml'))
 
 rz_api = payapi['api_id']
 rz_key = payapi['api_key']
@@ -232,7 +232,7 @@ def addToCartProduct():
 @app.route("/cart")
 def cart():
     if isUserLoggedIn():
-        loadapi = yaml.safe_load(open('/Users/theseus/Documents/GitHub/gl-retail-ordering-system-payment/fe-be/config.yaml'))
+        loadapi = yaml.safe_load(open('config.yaml'))
         loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
         cartdetails, totalsum, tax = getusercartdetails()
         
@@ -597,12 +597,11 @@ def createBid():
         #response = requests.post(url = api_url, data=payload)
         headers = {'Content-Type': 'application/json'}
         response = requests.request("POST", api_url, headers=headers, data=payload)
-
         #print(response.text)
-        if response.text == "Bid Created":
+        if 'created' in response.text.lower():
             flash('Bid Created', 'success')
         else:
-            flash(str(response.text), 'error')
+            flash(str(response.text), 'danger')
          
         return redirect(url_for('productDescription', productId=productId))
     else:
