@@ -13,8 +13,8 @@ import requests
 import yaml
 import razorpay
 
-loadapi = yaml.safe_load(open('config.yaml'))
-payapi = yaml.safe_load(open('api.yaml'))
+loadapi = yaml.safe_load(open('/Users/theseus/Documents/GitHub/gl-retail-ordering-system-payment/fe-be/config.yaml'))
+payapi = yaml.safe_load(open('/Users/theseus/Documents/GitHub/gl-retail-ordering-system-payment/fe-be/api.yaml'))
 
 rz_api = payapi['api_id']
 rz_key = payapi['api_key']
@@ -232,7 +232,7 @@ def addToCartProduct():
 @app.route("/cart")
 def cart():
     if isUserLoggedIn():
-        loadapi = yaml.safe_load(open('config.yaml'))
+        loadapi = yaml.safe_load(open('/Users/theseus/Documents/GitHub/gl-retail-ordering-system-payment/fe-be/config.yaml'))
         loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
         cartdetails, totalsum, tax = getusercartdetails()
         
@@ -473,13 +473,6 @@ def checkoutForm():
     else:
         return redirect(url_for('loginForm'))
 
-
-@app.route("/orders", methods=['GET', 'POST'])
-def orders():
-    loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
-    return render_template('404.html', loggedIn=loggedIn, firstName=firstName)
-
-
 @app.route("/profile", methods=['GET', 'POST'])
 def profile():
     loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
@@ -535,10 +528,6 @@ def createOrder():
 
     data = { "amount": amount_payable, "currency": "INR", "receipt": str(ordernumber[0]) } 
     payment = client.order.create(data=data)
-    print("Payment Object: ")
-    print (payment)
-    print("Order number: ")
-    print(ordernumber[0])
 
     cartdetails, totalsum, tax = getusercartdetails()
 
@@ -558,10 +547,38 @@ def paymentSuccess():
     rzp_order_id = request.args.get('order')
     this_transaction = pd.DataFrame
     this_transaction = p_df[p_df['order_id'] == rzp_order_id]
-    # if this_transaction['error_code']:
-    #     print("Payment Failed.!")
-    # else:
-    userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
-    removeordprodfromcart(userId)
+    status = this_transaction['status']
+    print(status)
+    if( str(status).split()[1] == 'captured' ) :
+        userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
+        removeordprodfromcart(userId)
+        print("Payment Succeeded.!")
+    else:
+        print("Payment failed.!")
 
     return redirect(url_for('root'))
+
+
+
+@app.route("/orders", methods=['GET', 'POST'])
+def orders():
+    loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
+    userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
+    orders, orderDetails = getOrderedProducts(userId)
+    orderDict = {t[0]: t[1] for t in orders}
+
+    data = []
+    for od in orderDetails:
+        d = {}
+        product = getProductDetails(od.productid)
+        d['product_name'] = product.product_name
+        d['image'] = product.image
+        d['description'] = product.description
+        d['quantity'] = od.quantity
+        d['ordered_date'] = orderDict[od.orderid]
+        data.append(d)
+
+    return render_template('orderDetails.html', loggedIn=loggedIn, firstName=firstName, details=data,
+                                productCountinKartForGivenUser=productCountinKartForGivenUser)
+
+
