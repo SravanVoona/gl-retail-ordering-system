@@ -260,13 +260,17 @@ def getusercartdetails():
 
     productsincart = Product.query.join(Cart, (Product.productid == Cart.productid)  &  (db_norm(Product.weight) == db_norm(Cart.subproductid)) )\
         .add_columns(Product.productid, Product.product_name, Product.discounted_price, Cart.quantity, Product.image) \
-        .add_columns(Product.discounted_price * Cart.quantity).filter(
-        Cart.userid == userId[0])
+        .add_columns(Product.discounted_price * Cart.quantity) \
+        .add_columns(Cart.bidprice) \
+        .filter(Cart.userid == userId[0])
     
     totalsum = 0
 
     for row in productsincart:
-        totalsum += row[6]
+        if row['bidprice'] is not None:
+            totalsum += row['bidprice']
+        else:
+            totalsum += row[6]
 
     tax = ("%.2f" % (.06 * float(totalsum)))
 
@@ -393,3 +397,20 @@ def getOrderedProducts(userId):
         if oneProduct: orderedProducts.append(oneProduct)
 
     return (orderIDs, orderedProducts)
+
+
+# for adding bidding product to the cart
+def persistAuctionToCart(productId, userId, bidPrice):
+
+    #product_record = getProductDetails(productId)
+    products = Product.query.with_entities(Product.productid, Product.weight, Product.sub_product_id).filter(Product.productid == productId).all()
+    for product in products:
+        subproductid = product['weight']
+    #print(subproductid)
+    cart = Cart(userid=userId, productid=productId,subproductid=subproductid, quantity=1, bidprice = bidPrice)
+
+    db.session.merge(cart)
+    db.session.flush()
+    db.session.commit()
+    
+    return

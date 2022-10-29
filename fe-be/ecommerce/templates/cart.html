@@ -23,8 +23,10 @@
 							<th class="column-1">&ensp; &ensp;&ensp; &ensp;</th>
 							<th class="column-2">&ensp; &ensp;&ensp; &ensp; Product</th>
 							<th class="column-3">&ensp; &ensp; &ensp; &ensp; Price</th>
-							<th class="column-4 p-l-70">&ensp; &ensp; &ensp; &ensp; Quantity</th>
-							<th class="column-5">&ensp; &ensp; &ensp; &ensp; Subtotal</th>
+							<!--<th class="column-4 p-l-70">&ensp; &ensp; &ensp; &ensp; Quantity</th>-->
+							<th class="column-4">&ensp; &ensp; &ensp; &ensp; Subtotal</th>
+							<th class="column-5">&ensp; &ensp; &ensp; &ensp; Auction Product</th>
+							<th class="column-6 p-l-70">&ensp; &ensp; &ensp; &ensp; Quantity</th>
 						</tr>
 						{% for row in cartData %}
 						<tr class="table-row">
@@ -35,13 +37,21 @@
 							</td>
 							<td class="column-2"> &ensp; &ensp; &ensp; &ensp; {{row[2]}}</td>
                             <span width="20px"></span>
+							<!--<td class="column-3"> &ensp; &ensp; &ensp;&ensp; &#8377 {{row[3]}}</td>-->
+							{% if row.bidprice == None %}
 							<td class="column-3"> &ensp; &ensp; &ensp;&ensp; &#8377 {{row[3]}}</td>
-
-							<td class="column-4"> &ensp; &ensp; &ensp; &ensp;
-									<input class="size8 m-text18 t-center num-product" type="number" name="num-product1" value="{{row[4]}}" disabled>
-                                    &ensp; &ensp; <a href="/removeFromCart?productId={{row[1]}}"/>Remove
-							</td>
-							<td class="column-5">&ensp; &ensp; &ensp; &ensp; &#8377 {{row[6]}}</td>
+							<td class="column-4">&ensp; &ensp; &ensp; &ensp; &#8377 {{row[6]}}</td>
+							<td class="column-5"> &ensp; &ensp; &ensp;&ensp; NA </td>
+							{% else %}
+							<td class="column-3"> &ensp; &ensp; &ensp;&ensp; &#8377 {{row[7]}}</td>
+							<td class="column-4">&ensp; &ensp; &ensp; &ensp; &#8377 {{row[7]}}</td>
+							<td class="column-5"> &ensp; &ensp; &ensp;&ensp; Yes </td>
+							{% endif %}
+							<td class="column-6"> &ensp; &ensp; &ensp; &ensp;
+								<input class="size8 m-text18 t-center num-product" type="number" name="num-product1" value="{{row[4]}}" disabled>
+								&ensp; &ensp; <a href="/removeFromCart?productId={{row[1]}}"/>Remove
+						</td>
+							
 						</tr>
                     {% endfor %}
 
@@ -106,7 +116,7 @@
         <div class="product-image">
 <!--            <span class="discount-tag">15% off</span>-->
 			<a href="/productDescription?productId={{row.productid}}">
-			<img src="{{ row.image }}"/>
+			<img src="{{ row.image }}", style="width: 150px;"/>
 			</a>
         </div>
 

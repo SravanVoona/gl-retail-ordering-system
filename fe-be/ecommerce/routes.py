@@ -12,6 +12,7 @@ import json
 import requests
 import yaml
 import razorpay
+from flask import jsonify
 
 loadapi = yaml.safe_load(open('config.yaml'))
 payapi = yaml.safe_load(open('api.yaml'))
@@ -140,7 +141,8 @@ def productDescription():
     response = requests.get(api_url, params=params)
     response_json = response.json()
     auction_info = dict(response_json)
-    biddableProduct = True if len(auction_info) > 0 else False
+    #print(auction_info)
+    biddableProduct = True if 'status' in auction_info and auction_info['status'] == 'open' else False
     #print(auction_info)
     
     # get recommended Items
@@ -607,5 +609,42 @@ def createBid():
     else:
         flash('please log in !!', 'success')
         return redirect(url_for('root'))
+    
+@app.route("/addAuctionToCart", methods=['POST'])
+def addAuctionToCart():
+  try:
+    payload = request.get_json()
+    #print(payload)
+    userId = int(payload["userId"])
+    productId  = int(payload["productId"])
+    bidPrice = float(payload["bidPrice"])
+    persistAuctionToCart(productId, userId, bidPrice)
+    #print('persistAuctionToCart')
+    return jsonify({"status": 200})
+  except Exception as e:
+    return jsonify({"status": 400, "err": str(e)})
+
+
+@app.route("/bids", methods=['GET'])
+def getBids():
+    ' In Progress '
+    try:
+        # get logged in userid
+        users = User.query.with_entities(User.userid).filter(User.email == session['email']).all()
+        for user in users:
+            userId = user['userid']
+        
+        # get bids Information
+        api_url = loadapi['biddingEngineUrl'] + '/user_bids'
+        params = {"userId": userId}
+        response = requests.get(api_url, params=params)
+        response_json = response.json()
+        user_bids = list(response_json)
+            
+        
+        return render_template('userBids.html', bids=user_bids)
+    except Exception as e:
+        return jsonify({"status": 400, "err": str(e)})
+    
     
 

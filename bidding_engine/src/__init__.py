@@ -30,8 +30,10 @@ models.create_mongo_collection(DATABASE_NAME, TABLE_TWO, mongo_client)
 mongo_db_conn = mongo_client[DATABASE_NAME] 
 
 ### Set up initial data ###
-models.add_auction(202212001, 1, 12000, 500, '2022-10-25T00:00:00.000Z', '2022-11-25T00:00:00.000Z', mongo_db_conn)
-models.add_auction(202212002, 1, 14000, 500, '2022-10-25T00:00:00.000Z', '2022-11-25T00:00:00.000Z', mongo_db_conn)
-models.add_auction(202212003, 1, 10000, 500, '2022-10-25T00:00:00.000Z', '2022-11-25T00:00:00.000Z', mongo_db_conn)
+models.add_initial_auction(202212001, 1, 6000, 500, '2022-10-25T00:00:00.000Z', '2022-10-28T00:00:00.000Z', mongo_db_conn)
+models.add_initial_auction(202212002, 1, 7000, 500, '2022-10-25T00:00:00.000Z', '2022-11-25T00:00:00.000Z', mongo_db_conn)
+models.add_initial_auction(202212003, 1, 5000, 500, '2022-10-25T00:00:00.000Z', '2022-11-25T00:00:00.000Z', mongo_db_conn)
+models.add_initial_auction(202212004, 1, 4000, 500, '2022-10-25T00:00:00.000Z', '2022-11-25T00:00:00.000Z', mongo_db_conn)
+models.add_initial_auction(202212005, 1, 6000, 500, '2022-10-25T00:00:00.000Z', '2022-11-25T00:00:00.000Z', mongo_db_conn)
 
 
