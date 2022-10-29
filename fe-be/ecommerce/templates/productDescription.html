@@ -96,13 +96,15 @@
 		<input type="submit" value="Bid Now">
 		<input type="hidden" id="productId" name="productId" value="{{auctionDetails['product_id']}}">
 	</form>-->
+	{% if auctionDetails.status == "open" %}
 	<form method = "GET" action = "/createBid">  
         <table>  
             <tr><td style="width: 200px;height: 20px;" >Enter Bid Value</td><td><input type = 'number' name = 'bidAmount' required></td></tr>  
             <tr><td style="height:30px" ><h3><input type = "submit" value = "Bid Now" id="bidNow"></h3></td></tr>
 			<tr><td></td><input type="hidden" id="productId" name="productId" value="{{auctionDetails['product_id']}}"></td></tr>
         </table>  
-    </form>  
+    </form>
+	{% endif %}  
 
 	
 	<!--<div id="bidNow">

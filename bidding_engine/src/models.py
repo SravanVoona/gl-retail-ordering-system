@@ -1,5 +1,7 @@
 import pymongo
 import uuid
+from datetime import datetime
+
 
 def create_mongo_db (db_name, client):
     db_list = client.list_database_names()
@@ -42,6 +44,7 @@ def highest_bidding_user(auction_id, db_conn):
 def extract_auction_info(product_id, db_conn):
     #print(product_id)
     #print(check_open_auction(product_id, db_conn))
+    current_iso_datetime = datetime.now().isoformat(sep='T',timespec='auto')
     auction_info = db_conn.auction.find({'product_id': product_id, 'status': 'open'})
     auction_dic = dict()
     for row in auction_info:
@@ -49,6 +52,8 @@ def extract_auction_info(product_id, db_conn):
         #print(auction_dic)
         current_max_bid = highest_bidding_amount(auction_dic['auction_id'], db_conn)
         auction_dic['current_max_bid'] = current_max_bid if current_max_bid > 0 else auction_dic['min_amount']
+        if auction_dic['end_time'] <= current_iso_datetime:
+            auction_dic['status'] = 'close'
     return auction_dic
 
 
@@ -64,6 +69,31 @@ def extract_auction_products(db_conn):
 def add_auction(product_id, seller_id, min_amount, increment, start_time, end_time, db_conn):
     if check_open_auction(product_id, db_conn) > 0:
         return 'Auction Already Exists'
+    # get a new auction id
+    auction_id = str(uuid.uuid4())
+    auction = db_conn.auction.insert_one({'auction_id': auction_id,
+                                          'product_id': product_id, 
+                                          'status': 'open',
+                                          'seller_id': seller_id,
+                                          'min_amount': min_amount,
+                                          'increment': increment,
+                                          'start_time': start_time,
+                                          'end_time': end_time})
+    return 'Auction Created'
+
+def check_auction_info(product_id, db_conn):
+    auction_info = db_conn.auction.find({'product_id': product_id})
+    for auction in auction_info:
+        return 1
+    return 0
+
+def add_initial_auction(product_id, seller_id, min_amount, increment, start_time, end_time, db_conn):
+    if check_open_auction(product_id, db_conn) > 0:
+        return 'Auction Already Exists'
+    
+    if check_auction_info(product_id, db_conn) > 0:
+        return 'Initial Setup Conflict'
+    
     # get a new auction id
     auction_id = str(uuid.uuid4())
     auction = db_conn.auction.insert_one({'auction_id': auction_id,
@@ -144,6 +174,13 @@ def extract_user_bids (user_id, db_conn):
         user_bids.append(bid_dict) 
         
     return sorted(user_bids, key=lambda x: x['timestamp'], reverse=True)
+
+def extract_product_id (auction_id, db_conn):
+    auction_info = db_conn.auction.find({'auction_id': auction_id}).limit(1)
+    for auction_record in auction_info:
+        return auction_record['product_id']
+    return 
+
             
         
         

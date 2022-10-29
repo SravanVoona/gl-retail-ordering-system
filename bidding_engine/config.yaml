@@ -4,5 +4,7 @@ mongodb:
   tables: ['auction', 'bidding']
 bidding_service:
   interval: 5
+ecommerce: 
+  url: 'http://192.168.29.215:5000/'
 
 

@@ -4,3 +4,4 @@ datetime
 schedule==1.1.0
 flask
 pyyaml
+requests

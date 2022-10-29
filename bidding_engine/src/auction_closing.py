@@ -4,6 +4,9 @@ import yaml
 from datetime import datetime
 import schedule
 import time
+import json
+import requests
+
 
 
 ### Extract Config Information ###
@@ -21,6 +24,13 @@ mongo_db_conn = mongo_client[DATABASE_NAME]
 # get current datetime
 current_iso_datetime = datetime.now().isoformat(sep='T',timespec='auto')
 
+def push_to_cart (productId, userId, bidPrice):
+    api_url = yaml_config['ecommerce']['url'] + 'addAuctionToCart'
+    payload = json.dumps({"productId": productId, "userId": userId, "bidPrice": bidPrice})
+    print(payload)
+    headers = {'Content-Type': 'application/json'}
+    response = requests.request("POST", api_url, headers=headers, data=payload)
+
 
 def auction_closing(): 
     print("<-- Job Running -->")
@@ -30,6 +40,11 @@ def auction_closing():
 
     for auction_id in end_auction_info:
         print(auction_id)
+        
+        # get product id
+        product_id = models.extract_product_id(auction_id, mongo_db_conn)
+        print(product_id)
+        
         # get winning information
         winning_info = models.highest_bidding_user(auction_id, mongo_db_conn)
         
@@ -44,10 +59,15 @@ def auction_closing():
         print(auction_id, ' - ', user_id, ' - ', final_amount)
         models.close_auction(auction_id, user_id, final_amount, mongo_db_conn)
         
+        # add auction product to cart in ecommerce database
+        push_to_cart(product_id, user_id, final_amount)
+        print('push_to_cart')
+        
+        
         
 # Task scheduling
 # After every 10 mins geeks() is called.
-schedule.every(5).seconds.do(auction_closing)
+schedule.every(120).seconds.do(auction_closing)
 
 
 # Loop so that the scheduling task

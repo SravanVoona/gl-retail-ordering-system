@@ -1,7 +1,7 @@
-from xmlrpc.client import ProtocolError
+#from xmlrpc.client import ProtocolError
 from pymongo import MongoClient
 from flask import Flask
-from bson.json_util import dumps
+#from bson.json_util import dumps
 from src import app
 from src import mongo_db_conn
 
@@ -81,7 +81,7 @@ def get_auction():
       auction_info.pop('_id')
     return jsonify(auction_info)
   except Exception as e:
-    return jsonify({"status": 400, "err": str(e)})
+    return jsonify({"api_status": 400, "err": str(e)})
   
 @app.route("/user_bids", methods = ['GET'])
 def get_user_bids():
