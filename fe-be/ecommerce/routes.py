@@ -440,6 +440,7 @@ def addProduct():
             product_category = product_category.filter(ProductCategory.categoryid==form.category.data)
             record = product_category.one()
             record.productid = product.productid
+            record.vendorid = vendorid
             #db.session.add(product_category)
             db.session.commit()
             flash(f'Product {form.productName} added successfully', 'success')
