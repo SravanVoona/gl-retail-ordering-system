@@ -56,8 +56,16 @@
 						<br>
 						<br>
 						{% if not loggedIn %}
-						<button type="button" onclick="document.getElementById('id01').style.display='none'"
-								  class="registerbtn"><a href="/registerationForm">Register here</a></button>
+						<div class="dropdown">
+							<button type="button" onclick="document.getElementById('id01').style.display='none'"
+							class="registerbtn">Register Here</button>
+							<div class="dropdown-content">
+							  <a href="/registerationForm">User Registration </a>
+							  <a href="/vendorregisterationForm">Vendor Registration</a>
+							</div>
+						  </div>
+						<!-- <button type="button" onclick="document.getElementById('id01').style.display='none'"
+								  class="registerbtn"><a href="/registerationForm">Register here</a></button> -->
 						{% else %}
 						<button type="button" onclick="document.getElementById('id01').style.display='none'"
 							  class="registerbtn"><a href="/">View Offers</a></button>

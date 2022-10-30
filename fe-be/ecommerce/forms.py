@@ -115,6 +115,7 @@ def getLoginUserDetails():
 
     return (loggedIn, firstName, productCountinCartForGivenUser)
 
+
 def getUserId():
 
 
@@ -135,7 +136,7 @@ def getProductDetailsByName(productName):
     productDetailsByName = Product.query.filter(Product.product_name.like('%'+productName+'%') ).all()
     return productDetailsByName
 
-def extractAndPersistUserDataFromForm(request):
+def extractAndPersistUserDataFrom(request):
     password = request.form['password']
     email = request.form['email']
     firstName = request.form['firstName']
@@ -149,6 +150,34 @@ def extractAndPersistUserDataFromForm(request):
 
     user = User(fname=firstName, lname=lastName, password=hashlib.md5(password.encode()).hexdigest(), address=address,
                 city=city, state=state, country=country, zipcode=zipcode, email=email, phone=phone)
+
+    try:
+        db.session.add(user)
+        db.session.flush()
+        db.session.commit()
+    except exc.SQLAlchemyError:
+        return "Registration failed"
+    return "Registered Successfully"
+
+
+# "flaskform for vendor registration"
+def extractAndPersistVendorDataFrom(request):
+    password = request.form['password']
+    email = request.form['email']
+    firstName = request.form['firstName']
+    lastName = request.form['lastName']
+    address = request.form['address']
+    zipcode = request.form['zipcode']
+    city = request.form['city']
+    state = request.form['state']
+    country = request.form['country']
+    phone = request.form['phone']
+    companyName = request.form['companyName']
+    panNumber = request.form['panNumber']
+    adhaarcardNumber = request.form['adhaarcardNumber']
+    user = User(fname=firstName, lname=lastName, password=hashlib.md5(password.encode()).hexdigest(), address=address,city=city,
+             state=state, country=country, zipcode=zipcode, email=email, phone=phone, companyName=companyName,
+             panNumber=panNumber, adhaarcardNumber=adhaarcardNumber,isvendor=1)
 
     try:
         db.session.add(user)
@@ -173,6 +202,14 @@ def isUserAdmin():
         userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
         currentUser = User.query.get_or_404(userId)
         return currentUser.isadmin
+        
+# check if user is a vendor
+def isUserVendor():
+    if isUserLoggedIn():
+        # ProductCategory.query.filter_by(productid=product.productid).first()
+        userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
+        currentUser = User.query.get_or_404(userId)
+        return currentUser.isvendor
 
 def userRecommendations():
     productId = Order.query.join(OrderedProduct, OrderedProduct.orderid == Order.orderid) \
@@ -236,7 +273,7 @@ class addCategoryForm(FlaskForm):
     submit = SubmitField('Save')
 
 class addProductForm(FlaskForm):
-    bulkUpload = FileField('Bulk Upload Products', validators=[FileAllowed(['jpg', 'png'])])
+    bulkUpload = FileField('Upload Certificate', validators=[FileAllowed(['jpg', 'png'])])
     category = SelectField('Category:', coerce=int, id='select_category')
     sku = IntegerField('Product SKU:', validators=[DataRequired()])
     brand = StringField('Brand:', validators=[DataRequired()])
