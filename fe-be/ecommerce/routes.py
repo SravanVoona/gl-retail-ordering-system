@@ -437,14 +437,10 @@ def addProduct():
 
             db.session.add(product)
             db.session.commit()
-            product_category = db.session.query(ProductCategory)
-            product_category = product_category.filter(ProductCategory.categoryid==form.category.data)
-            product_category_product = product_category.filter(ProductCategory.productid==product.productid)
-            record = product_category.one()
-            record2 = product_category_product
-            record.productid = product.productid
-            record2.vendorid = vendorid
-            #db.session.add(product_category)
+            product_category = ProductCategory(categoryid=form.category.data, productid=product.productid ,vendorid=vendorid)
+            db.session.add(product_category)
+            db.session.commit()
+            db.session.add(product_category)
             db.session.commit()
             flash(f'Product {form.productName} added successfully', 'success')
             #return render_template("vendor.html")
@@ -464,10 +460,6 @@ def addCategory():
         if form.validate_on_submit():
             category = Category(category_name=form.category_name.data)
             db.session.add(category)
-            db.session.commit()
-            categoryId = Category.query.with_entities(Category.categoryid).filter_by(category_name=form.category_name.data).first()
-            product_category = ProductCategory(categoryid=categoryId, vendorid=vendorid)
-            db.session.add(product_category)
             db.session.commit()
             flash(f'Category {form.category_name.data}! added successfully', 'success')
             return redirect(url_for('getVendorCategories'))
