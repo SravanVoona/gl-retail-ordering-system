@@ -42,6 +42,7 @@ def login():
                 #return to root
                 return redirect(url_for('root'))
         else:
+            flash('Login failed, please check your credentials', 'error')
             error = 'Invalid UserId / Password'
             return render_template('index.html', error=error)
 
@@ -475,7 +476,6 @@ def addCategory():
     return redirect(url_for('root'))
 
 
-
 # "all categories for vendor"   
 @app.route("/vendor/allcategories", methods=['GET'])
 def getAllCategories():
@@ -486,7 +486,7 @@ def getAllCategories():
         cur.execute(
             'SELECT category.categoryid, category.category_name, COUNT(product_category.productid) as noOfProducts FROM category LEFT JOIN product_category ON category.categoryid = product_category.categoryid GROUP BY category.categoryid;')
         categories = cur.fetchall()
-        return render_template('adminCategories.html', categories=categories)
+        return render_template('vendorCategories.html', categories=categories)
     return redirect(url_for('root'))
 
 
