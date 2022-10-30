@@ -1,0 +1,36 @@
+{% extends "layout.html"  %}
+{% block content %}
+<br>
+<br>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Categories</h3>
+                </div>
+                <div class="panel-body">
+                    Add categories
+                </div>
+                <div>
+                      <a class="btn btn-success" href="{{ url_for('addCategory') }}">Click here</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Products</h3>
+                </div>
+                <div class="panel-body">
+                    Add products
+                </div>
+                <div>
+                      <a class="btn btn-success" href="{{ url_for('addProduct') }}">Click here</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
