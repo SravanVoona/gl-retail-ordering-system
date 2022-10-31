@@ -1,12 +1,34 @@
 {% extends "header.html"  %}
 {% block content %}
 
+{% if biddableProduct %}
+<head>
+	<meta http-equiv="refresh" content="15">
+</head>
+{% endif %}
+
+<p> {{ error }} </p>
+<div class="row">
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                <span>{{ message }}</span>
+<!--                <button type="button" class="cancelbtn" data-dismiss="alert" aria-label="Close">-->
+<!--                <span aria-hidden="true">×</span> -->
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+</div>
+
 <div class="row" id="display">
 <div class="col-md-3">
 	<div id="productName">
 		<h1>{{data.product_name}}</h1>
 	</div>
-	<img src="{{ data.image }}"/>
+	<img src="{{ data.image }}", style="width: 280px;"/>
 </div>
 
 	<div  class="col-md-9">
@@ -15,37 +37,92 @@
 
 	<div id="productDescription">
 		<h2>Details</h2>
-		<table id="descriptionTable">
+		<table id="descriptionTable" >
 			<tr>
-				<td>Name</td>
-				<td>{{data.description}}</td>
+				<td style="width: 200px;height: 20px;">Name</td>
+				<td>{{data.product_name}}</td>
 			</tr>
 			<tr>
-				<td>Regular Price</td>
+				<td style="height: 20px;">Regular Price</td>
 				<td>&#8377 {{data.regular_price}}</td>
 			</tr>
             <tr>
-				<td>Discounted Price</td>
+				<td style="height: 20px;">Discounted Price</td>
 				<td>&#8377 {{data.discounted_price}}</td>
 			</tr>
 			<tr>
-				<td>Stock</td>
+				<td style="height: 20px;">Stock</td>
 				<td>{{data.stock}}</td>
 			</tr>
 			<tr>
-				<td>Sub Product</td>
+				<td style="height: 20px;">Sub Product</td>
 				<td>{{data.sub_product_id}}</td>
 			</tr>
 		</table>
-		<h2>Description</h2>
+		<h3>Description</h3>
 		<p>{{data['description']}}</p>
+		<p>&nbsp;</p>
 	</div>
-		<div id="addToCart">
+	{% if biddableProduct %}
+	<div id="biddingDetails">
+		<h2>Bidding Details</h2>
+		<table id="biddingDetails">
+			<tr>
+				<td style="width: 200px;height: 20px;">Status</td>
+				<td>{{auctionDetails['status']}}</td>
+			</tr>
+			<tr>
+				<td style="height: 20px;">Start Time</td>
+				<td>{{auctionDetails['start_time']}}</td>
+			</tr>
+			<tr>
+				<td style="height: 20px;">End Time</td>
+				<td>{{auctionDetails['end_time']}}</td>
+			</tr>
+			<tr>
+				<td style="height: 20px;" >Current Maximum Bid</td>
+				<td><font color="rgb(128, 128, 0)">&#8377 {{auctionDetails['current_max_bid']}}</font></td>
+			</tr>
+			<!--<tr>
+				<td>Increment</td>
+				<td>&#8377 {{auctionDetails['increment']}}</td>
+			</tr>-->
+		</table>
+	</div>
+	
+	<!--<form action="/createBid">
+		<label for="Enter Bid Value">Enter Bid Value:</label><br>
+		<input type="number" id="bidAmount" name="bidAmount"><br>
+		<input type="submit" value="Bid Now">
+		<input type="hidden" id="productId" name="productId" value="{{auctionDetails['product_id']}}">
+	</form>-->
+	{% if auctionDetails.status == "open" %}
+	<form method = "GET" action = "/createBid">  
+        <table>  
+            <tr><td style="width: 200px;height: 20px;" >Enter Bid Value</td><td><input type = 'number' name = 'bidAmount' required></td></tr>  
+            <tr><td style="height:30px" ><h3><input type = "submit" value = "Bid Now" id="bidNow"></h3></td></tr>
+			<tr><td></td><input type="hidden" id="productId" name="productId" value="{{auctionDetails['product_id']}}"></td></tr>
+        </table>  
+    </form>
+	{% endif %}  
+
+	
+	<!--<div id="bidNow">
+		<p><u>
+			<a href="{{biddingEngineUrl}}"><input type="submit" value="Bid Now"> </a>
+			<input type="hidden" id="productId" name="productId" value="{{auctionDetails['product_id']}}">
+		</u>
+		</p>
+	</div>-->
+
+	{% else %}
+	<div id="addToCart">
 		<p><u>
 			<a href="/addToCartProduct?productId={{request.args.get('productId')}}&subProductId={{data.weight}}"><input type="submit" value="Add to Cart"> </a>
 		</u>
 		</p>
-		</div>
+	</div>
+	{% endif %}
 
 	</div>
 
@@ -65,7 +142,7 @@
         <div class="product-image">
 <!--            <span class="discount-tag">15% off</span>-->
 			<a href="/productDescription?productId={{row.productid}}">
-			<img src="{{ row.image }}"/>
+			<img src="{{ row.image }}", style="width: 150px;"/>
 			</a>
         </div>
 

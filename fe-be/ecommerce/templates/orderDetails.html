@@ -1,0 +1,33 @@
+				{% extends "header.html"  %}
+				{% block content %}
+
+				{% for data in details %}
+				<div id="productName">
+					<h2>{{data.product_name}}</h2>
+				</div>
+				<div class="row" id="display">
+					<img src="{{ data.image }}" style="width: 250px;"/>
+					<div id="productDescription">
+						<table id="descriptionTable">
+							<br>
+							<tr>
+								<td><h3>{{data.description}}</h3></td>
+							</tr>
+							<tr>
+								<td><h4>Quantity:  {{data.quantity}}</h4></td>
+							</tr>
+							<br>
+							<tr>
+								<td><h4>Order Date:  {{data.ordered_date}}</h4></td>
+							</tr>
+							<tr>
+								<td><h4>Status:  Delivered</h4></td>
+							</tr>
+							<br>
+						</table>
+					</div>
+				</div>
+				<br><br><br>
+				{% endfor %}
+
+				{% endblock content %}
