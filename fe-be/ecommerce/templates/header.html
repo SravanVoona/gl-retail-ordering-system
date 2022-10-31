@@ -1,13 +1,14 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
-	<title>GroCart</title>
+	<title>Regalia</title>
 	<meta charset="utf-8" http-equiv="X-Frame-Options" content="deny">
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 	<link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
 	<link rel="stylesheet" type="text/css" href="/static/vendor/bootstrap/css/bootstrap.min.css" >
 	<link rel="stylesheet" type="text/css" href="/static/css/main.css" >
 	<link rel="stylesheet" href="/static/css/topStyle.css">
+	<link rel="stylesheet" href="/static/css/style.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 	<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
@@ -1458,7 +1459,7 @@
 	.cancelbtn {
 	  width: auto;
 	  padding: 10px 17px;
-	  background-color: #f44336;
+	  background-color: #b8190ad8;
 	}
 	/* Extra styles for the cancel button */
 	.registerbtn {
@@ -1743,7 +1744,7 @@
 
 	.pre-btn:hover img, .nxt-btn:hover img{
 		opacity: 1;
-
+	}	
 	</style>
 </head>
 <body>
@@ -1759,13 +1760,13 @@
 						<div class="col-md-3">
 							<div>
 								<a class="link" href="/home">
-									<img src='static/images/Projectlogo3.jpg' style="width:150px;height:80px;margin-bottom: 20px;"">
+									<img src='/static/images/Regalia.jpeg'style="width:150px;height:80px;margin-bottom: 20px;">
 								</a>
 							</div>
 						</div>
 						<div class="col-md-6">
-							<span style="color: black; font-size:12px"> &ensp;&ensp;&ensp;&ensp;    &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;   &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;   &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;   &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;Contact Us: support@grocart.com     &ensp;&ensp;&ensp;       Telephone: +91 1234567890 </span>
-							<form  action="/search" class="example" style="margin:auto;max-width:600px" onsubmit="return searchValidate()" >
+							<span style="color: black; font-size:12px"></span><span> &ensp;&ensp;&ensp;&ensp;    &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;   &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;   &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;   &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;Contact Us: support@regalia.com     &ensp;&ensp;&ensp;&ensp;&ensp;       Telephone: +91 1234567890 </span>
+							<form  action="/search" class="example"style="margin:auto;max-width:700px" onsubmit="return searchValidate()" >
 
 							  <input type="text" placeholder="Search.." name="productname" id="city_autocomplete" autocomplete="on">
 							  		<button type="submit"><i class="fa fa-search"></i></button>
@@ -1784,27 +1785,32 @@
 								</li>
 								<li>
 										{% if not loggedIn %}
-									<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Login</button>
+									<button onclick="document.getElementById('id01').style.display='block'"style="width:auto;">Login</button>
 									<div id="id01" class="modal">
 										<form class="modal-content animate" action="/login" method="post">
 											<div class="imgcontainer">
 											  <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
 											  <img src='static/images/login.jpg' alt="Avatar" class="avatar">
 											</div>
-											<div class="container">
-											  <label for="uname"><b>Username</b></label>
-											  <input type="text" placeholder="Enter Username" name="email" required style="width:auto;  width: 100%; padding: 12px 20px;   margin: 8px 0;   display: inline-block;   border: 1px solid #ccc;   box-sizing: border-box; color:black;">
+											<div class="container form-group"> 
+											  <label for="uname"><b>Username</b></label>&nbsp;&nbsp;&nbsp;&nbsp;
+											  <input type="text" placeholder="Enter Username" name="email" class="form-control">
+											  <br>
+											  <!-- requiredstyle="width:auto;  width: 100%; padding: 12px 20px;   margin: 8px 0;   display: inline-block;   border: 1px solid #ccc;   box-sizing: border-box; color:black; -->
 											  <label for="psw"><b>Password</b></label>
-											  <input type="password" placeholder="Enter Password" name="password" required style="width:auto;  width: 100%; padding: 12px 20px;   margin: 8px 0;   display: inline-block;   border: 1px solid #ccc;   box-sizing: border-box; color:black;">
-											  <button type="submit">Login</button>
+											  <input type="password" placeholder="Enter Password" name="password" class="form-control"> <br><br>
+											  <!-- requiredstyle="width:auto;  width: 100%; padding: 12px 20px;   margin: 8px 0;   display: inline-block;   border: 1px solid #ccc;   box-sizing: border-box; color:black -->
+											  <div class="call-md-12 text-center">
+												<button type="submit" class="btn-block">Login</button>
+											  </div>	
 											  <label>
 												<input type="checkbox" checked="checked" name="remember">Remember me
 											  </label>
 											</div>
-											<div class="container" style="background-color:#f1f1f1">
+											<div class="container" style="background-color:#12b93c59">
 											  <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-											  <button type="button" onclick="document.getElementById('id01').style.display='none'"
-													  class="registerbtn"><a href="/registerationForm">Register here</a></button>
+											  <!-- <button type="button" onclick="document.getElementById('id01').style.display='none'"
+												class="registerbtn"><a href="/registerationForm">Register here</a></button>  -->
 												<span class="psw"><a href="/forgotPassword">Forgot password?</a></span>
 											</div>
 										</form>
