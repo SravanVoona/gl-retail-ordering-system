@@ -1,4 +1,3 @@
-@@ -0,0 +1,22 @@
 #!/bin/bash
   
 # turn on bash's job control
@@ -8,7 +7,7 @@ set -m
 python run.py &
   
 # Start the helper process
-python "/src/auction_closing.py"
+python "./src/auction_closing.py"
   
 # the my_helper_process might need to know how to wait on the
 # primary process to start before it does its work and returns
