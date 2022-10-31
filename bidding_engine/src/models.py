@@ -24,11 +24,12 @@ def check_open_auction (product_id, db_conn):
 
 def highest_bidding_amount(auction_id, db_conn):
     max_value_cur = db_conn.bidding.find({'auction_id': auction_id}).sort("bid_amount", -1).limit(1)
+    min_value_curr = db_conn.auction.find({'auction_id': auction_id}).limit(1)
     for record in max_value_cur:
         if 'bid_amount' in record:
             return record['bid_amount']
         else:
-            return -1
+            return min_value_curr['min_amount']
     return -1
 
 def highest_bidding_user(auction_id, db_conn):

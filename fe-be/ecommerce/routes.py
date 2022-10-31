@@ -13,6 +13,7 @@ import requests
 import yaml
 import razorpay
 from flask import jsonify
+import time
 
 loadapi = yaml.safe_load(open('config.yaml'))
 payapi = yaml.safe_load(open('api.yaml'))
@@ -544,6 +545,7 @@ import pandas as pd
 
 @app.route("/paymentSuccess", methods=['POST'])
 def paymentSuccess():
+    time.sleep(10)
     payments = client.payment.all()
     p_df = pd.DataFrame(payments['items'])
     rzp_order_id = request.args.get('order')

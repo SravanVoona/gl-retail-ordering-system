@@ -267,8 +267,8 @@ def getusercartdetails():
     totalsum = 0
 
     for row in productsincart:
-        if row['bidprice'] is not None:
-            totalsum += row['bidprice']
+        if row[7] is not None:
+            totalsum += row[7]
         else:
             totalsum += row[6]
 
