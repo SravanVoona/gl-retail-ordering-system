@@ -1141,7 +1141,7 @@ li.sale-noti > a {
 
 .side-menu .sub-menu > li {
   padding-left: 12px;
-  padding-top:
+  padding-top:  12px;
 }
 
 .side-menu .sub-menu a:hover {
@@ -1392,11 +1392,11 @@ li.sale-noti > a {
   position: relative;
 }
 .bg{
- background-image: url_for('static', filename='images/nackground.jpg'}};
- height: 100%;
- background-position: center;
- background-repeat: no-repeat;
- background-size: cover;
+  background-image: url_for('static', filename='images/nackground.jpg');
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 
 }
 .item-slick1 {

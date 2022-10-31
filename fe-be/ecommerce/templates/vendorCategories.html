@@ -8,9 +8,9 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">Add a New Category</h4>
                 </div>
-                <div class="panel-body">
+                <!-- <div class="panel-body">
                     New Category
-                </div>
+                </div> -->
                 <div>
                       <a class="btn btn-success m-5" href="{{ url_for('addCategory') }}">Click here</a>
                 </div>
@@ -21,9 +21,9 @@
                 <div class="panel-heading">
                     <h4 class="panel-title">Add a New Product</h4>
                 </div>
-                <div class="panel-body">
+                <!-- <div class="panel-body">
                     Add products
-                </div>
+                </div> -->
                 <div>
                       <a class="btn btn-success m-5" href="{{ url_for('addProduct') }}">Click here</a>
                 </div>
@@ -34,7 +34,7 @@
           <thead>
             <tr>
                 <th>Category Name</th>
-                <th>Number of products</th>
+                <!-- <th>Number of products</th> -->
                 <th>Actions</th>
             </tr>
           </thead>
@@ -42,7 +42,7 @@
               {% for category in categories %}
                 <tr>
                   <td>{{ category.category_name}}</td>
-                  <td>{{ category.noOfProducts }}</td>
+                  <!-- <td>{{ category.noOfProducts }}</td> -->
                   <td><a href="{{ url_for('category', category_id=category.categoryid) }}" class="btn btn-primary btn-sm m-1">View</a></td>
                 </tr>
               {% endfor %}

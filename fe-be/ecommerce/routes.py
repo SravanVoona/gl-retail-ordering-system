@@ -1,3 +1,4 @@
+from itertools import count
 import os
 import secrets
 import Image
@@ -39,8 +40,15 @@ def login():
             if isUserAdmin():
                 # Return to admin page
                 return redirect('admin')
-            return redirect(url_for('root'))
+            #return redirect(url_for('root'))
+            elif isUserVendor():
+                #return to vendor page
+                return redirect(url_for('vendor'))
+            else:
+                #return to root
+                return redirect(url_for('root'))
         else:
+            flash('Login failed, please check your credentials', 'error')
             error = 'Invalid UserId / Password'
             return render_template('index.html', error=error)
 
@@ -57,11 +65,32 @@ def registrationForm():
     return render_template("register.html")
 
 
+# "----------new api route for vendor registration------------"
+@app.route("/vendorregisterationForm")
+def registrationvForm():
+    return render_template("registervendor.html")
+
+
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         # Parse form data
-        msg = extractAndPersistUserDataFromForm(request)
+        msg = extractAndPersistUserDataFrom(request)
+        if msg:
+            # return render_template('index.html', error=msg)
+            flash('Registered Successfully', 'success')
+            return redirect(url_for('root'))
+        else:
+            flash('Registered failed', 'error')
+            return render_template('index.html', error="Registration failed")
+
+
+# "-----------------------------API for vendor registration---------------------------"
+@app.route("/vendorregister", methods=['GET', 'POST'])
+def vendorregister():
+    if request.method == 'POST':
+        # Parse form data
+        msg = extractAndPersistVendorDataFrom(request)
         if msg:
             # return render_template('index.html', error=msg)
             flash('Registered Successfully', 'success')
@@ -119,7 +148,7 @@ def displayCategory():
         .add_columns(Product.productid, Product.product_name, Product.regular_price, Product.discounted_price,
                      Product.image) \
         .join(Category, Category.categoryid == ProductCategory.categoryid) \
-        .filter(Category.categoryid == int(categoryId)) \
+        .filter(Category.categoryid == categoryId) \
         .add_columns(Category.category_name) \
         .all()
 
@@ -128,6 +157,30 @@ def displayCategory():
     return render_template('displayCategory.html', data=data, loggedIn=loggedIn, firstName=firstName,
                            noOfItems=noOfItems, categoryName=categoryName)
 
+
+# #"Vendor products by Category" "-- not in use--"
+# @app.route("/vendorInventory")
+# def displayProductsByCategory():
+#     if isUserVendor():
+#         loggedIn, firstName, noOfItems = getLoginUserDetails()
+#         vendorid = getUserId()
+#         #categoryId = request.args.get("categoryId")
+#         # .filter(ProductCategory.categoryid == int(categoryId)) \
+#         productDetailsByCategoryId = ProductCategory.query.join(Product, Product.productid == ProductCategory.productid & ProductCategory.vendorid == vendorid) \
+#             .add_columns(ProductCategory.categoryid, Product.productid, Product.product_name, Product.regular_price, Product.discounted_price,
+#                      Product.image) \
+#             .order_by(ProductCategory.categoryid) \
+#             .join(Category, Category.categoryid == ProductCategory.categoryid) \
+#             .group_by(Category.category_name) \
+#             .all()
+#         #productDetailsByCategoryId[5]
+#         categoryName = "Dummycategory"
+#         data = massageItemData(productDetailsByCategoryId)
+#         return render_template('displayCategory.html', data=data, loggedIn=loggedIn, firstName=firstName,
+#                            noOfItems=noOfItems, categoryName=categoryName)
+#     else:
+#         flash('Vendor login required', 'error')
+#         render_template('vendor.html')
 
 
 @app.route("/productDescription")
@@ -271,20 +324,6 @@ def category(category_id):
     return redirect(url_for('root'))
 
 
-@app.route("/admin/categories/new", methods=['GET', 'POST'])
-def addCategory():
-    if isUserAdmin():
-        form = addCategoryForm()
-        if form.validate_on_submit():
-            category = Category(category_name=form.category_name.data)
-            db.session.add(category)
-            db.session.commit()
-            flash(f'Category {form.category_name.data}! added successfully', 'success')
-            return redirect(url_for('getCategories'))
-        return render_template("addCategory.html", form=form)
-    return redirect(url_for('getCategories'))
-
-
 @app.route("/admin/categories/<int:category_id>/update", methods=['GET', 'POST'])
 def update_category(category_id):
     if isUserAdmin():
@@ -326,6 +365,8 @@ def getCategories():
     return redirect(url_for('root'))
 
 
+
+
 # this method is copied from Schafer's tutorials
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
@@ -346,6 +387,12 @@ def admin():
     return render_template('admin.html')
 
 
+# "-------------------vendor page-----------------"
+@app.route("/vendor", methods=['GET'])
+def vendor():
+    return render_template('vendor.html')
+
+
 @app.route("/admin/products", methods=['GET'])
 def getProducts():
     if isUserAdmin():
@@ -354,16 +401,60 @@ def getProducts():
     return redirect(url_for('root'))
 
 
-@app.route("/admin/products/new", methods=['GET', 'POST'])
+# @app.route("/admin/products/new", methods=['GET', 'POST'])
+# def addProduct():
+#     if isUserAdmin():
+#         form = addProductForm()
+#         form.category.choices = [(row.categoryid, row.category_name) for row in Category.query.all()]
+#         product_icon = ""  # safer way in case the image is not included in the form
+#         if form.validate_on_submit():
+#             if form.image.data:
+#                 product_icon = save_picture(form.image.data)
+#             product = Product(sku=form.sku.data, product_name=form.productName.data,
+#                               description=form.productDescription.data, image=product_icon,
+#                               stock=form.productQuantity.data,
+#                               discounted_price=form.productPrice.data - (form.productPrice.data / 15), product_rating=0,
+#                               product_review=" ", regular_price=form.productPrice.data,
+#                               sub_product_id=form.subProductId.data, weight=form.weight.data, brand=form.brand.data)
+
+#             db.session.add(product)
+#             db.session.commit()
+#             product_category = ProductCategory(categoryid=form.category.data, productid=product.productid)
+#             db.session.add(product_category)
+#             db.session.commit()
+#             flash(f'Product {form.productName} added successfully', 'success')
+#             return render_template("admin.html")
+#         return render_template("addProduct.html", form=form, legend="New Product")
+#     return redirect(url_for('root'))
+
+
+# @app.route("/admin/categories/new", methods=['GET', 'POST'])
+# def addCategory():
+#     if isUserAdmin():
+#         form = addCategoryForm()
+#         if form.validate_on_submit():
+#             category = Category(category_name=form.category_name.data)
+#             db.session.add(category)
+#             db.session.commit()
+#             flash(f'Category {form.category_name.data}! added successfully', 'success')
+#             return redirect(url_for('getCategories'))
+#         return render_template("addCategory.html", form=form)
+#     return redirect(url_for('getCategories'))
+
+
+# "------------------------------------ VENDOR PRODUCT ONBOARDING APIS --------------------------------------------------------"
+# "Vendor Add Product"
+@app.route("/vendor/products/new", methods=['GET', 'POST'])
 def addProduct():
-    if isUserAdmin():
+    if isUserVendor():
         form = addProductForm()
         form.category.choices = [(row.categoryid, row.category_name) for row in Category.query.all()]
         product_icon = ""  # safer way in case the image is not included in the form
+        vendorid = getUserId()
         if form.validate_on_submit():
             if form.image.data:
                 product_icon = save_picture(form.image.data)
-            product = Product(sku=form.sku.data, product_name=form.productName.data,
+            product = Product(vendorid=vendorid,sku=form.sku.data, product_name=form.productName.data,
                               description=form.productDescription.data, image=product_icon,
                               stock=form.productQuantity.data,
                               discounted_price=form.productPrice.data - (form.productPrice.data / 15), product_rating=0,
@@ -372,12 +463,80 @@ def addProduct():
 
             db.session.add(product)
             db.session.commit()
-            product_category = ProductCategory(categoryid=form.category.data, productid=product.productid)
+            product_category = ProductCategory(categoryid=form.category.data, productid=product.productid ,vendorid=vendorid)
+            db.session.add(product_category)
+            db.session.commit()
             db.session.add(product_category)
             db.session.commit()
             flash(f'Product {form.productName} added successfully', 'success')
-            return render_template("admin.html")
+            #return render_template("vendor.html")
+            return redirect(url_for('getVendorProducts'))
         return render_template("addProduct.html", form=form, legend="New Product")
+    flash("Vendor login is required!", "error")    
+    return redirect(url_for('root'))
+
+
+#"Vendor add category"
+@app.route("/vendor/categories/new", methods=['GET', 'POST'])
+def addCategory():
+    if isUserVendor():
+        form = addCategoryForm()
+        vendorid = getUserId()
+        #categoryId = Category.query.filter_by(category_name=form.category_name.data).get_or_404(Category.categoryid)
+        if form.validate_on_submit():
+            category = Category(category_name=form.category_name.data)
+            db.session.add(category)
+            db.session.commit()
+            flash(f'Category {form.category_name.data}! added successfully', 'success')
+            return redirect(url_for('getVendorCategories'))
+        return render_template("addCategory.html", form=form)
+    flash("Vendor login is required!","error")
+    return redirect(url_for('root'))
+
+
+# "all categories for vendor"   
+@app.route("/vendor/allcategories", methods=['GET'])
+def getAllCategories():
+    if isUserVendor():
+        # categories = Category.query.all()
+        cur = mysql.connection.cursor()
+        # Query for number of products on a category:
+        cur.execute(
+            'SELECT category.categoryid, category.category_name, COUNT(product_category.productid) as noOfProducts FROM category LEFT JOIN product_category ON category.categoryid = product_category.categoryid GROUP BY category.categoryid;')
+        categories = cur.fetchall()
+        return render_template('vendorCategories.html', categories=categories)
+    return redirect(url_for('root'))
+
+
+# "Vendor added categories only"
+@app.route("/vendorcategories", methods=['GET'])
+def getVendorCategories():
+    if isUserVendor():
+        vendorid = getUserId()
+        # categories = Category.query.all()
+        cur = mysql.connection.cursor()
+        # Query for number of products on a category:
+        #.add_columns(count(ProductCategory.productid).alias("noOfProducts")) \
+        #.order_by(Category.categoryid)  \
+        # categories = Category.query.join(ProductCategory, Category.categoryid == ProductCategory.categoryid) \
+        #     .order_by(Category.categoryid, Category.category_name)  \
+        #     .group_by(Category.category_name)  \
+        #     .all()
+        cur.execute(
+            'SELECT category.categoryid, category.category_name, COUNT(product_category.productid) as noOfProducts FROM category LEFT JOIN product_category ON category.categoryid = product_category.categoryid WHERE product_category.vendorid = '+str(vendorid)+' GROUP BY category.categoryid;')
+        categories = cur.fetchall()
+        return render_template('adminCategories.html', categories=categories)
+    flash('Vendor login is required!', 'error')
+    return redirect(url_for('root'))
+
+
+# "Vendor added products inventory"
+@app.route("/vendorproducts", methods=['GET'])
+def getVendorProducts():
+    if isUserVendor():
+        vendorid = getUserId()
+        products = Product.query.filter(Product.vendorid==vendorid).order_by(Product.sku, Product.sub_product_id).all()
+        return render_template('adminProducts.html', products=products)
     return redirect(url_for('root'))
 
 

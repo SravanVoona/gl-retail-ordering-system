@@ -32,17 +32,21 @@
 
 				<div class="slideshow-container">
 				<div class="mySlides fade">
-				  <img src="static/images/jew_one.jfif" style="width:850px;height:250px;">
+				  <img src="static/images/6.jpeg" style="width:850px;height:250px;">
 				</div>
 				<div class="mySlides fade">
-				  <img src="static/images/jew_two.jfif" style="width:850px;height:250px;">
+				  <img src="static/images/5.jpeg" style="width:850px;height:250px;">
 				</div>
 				<div class="mySlides fade">
-				  <img src="static/images/jew_three.jpg" style="width:850px;height:250px;">
+				  <img src="static/images/3.jpeg" style="width:850px;height:250px;">
+				</div>
+				<div class="mySlides fade">
+					<img src="static/images/2.jpeg" style="width:850px;height:250px;">
 				</div>
 			</div>
 				<br>
 				<div style="text-align:center">
+				  <span class="dot"></span>
 				  <span class="dot"></span>
 				  <span class="dot"></span>
 				  <span class="dot"></span>
@@ -51,13 +55,19 @@
 			<div class="col-md-3">
 				<div>
 					<h3 style="display: block; color: black; font-size: 2em; font-family: Montserrat-Regular;">
-						All the Groceries at your door step. <br><br>
+						BLING UP YOUR LIFE WITH REGALIA<br><br>
 						YOU choose - WE deliver
 						<br>
 						<br>
 						{% if not loggedIn %}
-						<button type="button" onclick="document.getElementById('id01').style.display='none'"
-								  class="registerbtn"><a href="/registerationForm">Register here</a></button>
+						<div class="dropdown">
+								<button type="button" onclick="document.getElementById('id01').style.display='none'"
+								class="registerbtn">Register Here</button>
+								<div class="dropdown-content">
+									<a href="/registerationForm">User Registration </a>
+									<a href="/vendorregisterationForm">Vendor Registration</a>
+								</div>
+						</div>		  
 						{% else %}
 						<button type="button" onclick="document.getElementById('id01').style.display='none'"
 							  class="registerbtn"><a href="/">View Offers</a></button>
@@ -67,9 +77,181 @@
 			</div>
 		</div>
 	</div>
+	<br><br><br><br><br><br>
 
+    <p align="center">SHOP BY CATEGORY</p>
 
-<div class="row">
+    <!-- item section -->
+  
+    <div class="item_section layout_padding2">
+      <div class="container">
+        <div class="item_container">
+          <div class="box">
+            <div class="price">
+              <h6>
+                Best PRICE
+              </h6>
+            </div>
+            <div class="img-box">
+                <a href="">
+              <img src="static/images/B1.jpeg" alt="">
+              </a>
+            </div>
+            <div class="name">
+              <h5>
+                platinum
+              </h5>
+            </div>
+          </div>
+          <div class="box">
+            <div class="price">
+              <h6>
+                Best PRICE
+              </h6>
+            </div>
+            <div class="img-box">
+              <img src="static/images/shopping (3).webp" alt="">
+            </div>
+            <div class="name">
+              <h5>
+                gold Ring
+              </h5>
+            </div>
+          </div>
+          <div class="box">
+            <div class="price">
+              <h6>
+                Best PRICE
+              </h6>
+            </div>
+            <div class="img-box">
+              <img src="static/images/4.jpeg" alt="">
+            </div>
+            <div class="name">
+              <h5>
+                Dimonds
+              </h5>
+            </div>
+          </div>
+          <div class="box">
+            <div class="price">
+              <h6>
+                Best PRICE
+              </h6>
+            </div>
+            <div class="img-box">
+              <img src="static/images/b2.jpeg" alt="">
+            </div>
+            <div class="name">
+              <h5>
+                Bracelet
+              </h5>
+            </div>
+          </div>
+          <div class="box">
+            <div class="price">
+              <h6>
+                Best PRICE
+              </h6>
+            </div>
+            <div class="img-box">
+              <img src="static/images/shopping.webp" alt="">
+            </div>
+            <div class="name">
+              <h5>
+                Earring
+              </h5>
+            </div>
+          </div>
+          <div class="box">
+            <div class="price">
+              <h6>
+                Best PRICE
+              </h6>
+            </div>
+            <div class="img-box">
+              <img src="static/images/neckwear.jpeg" alt="">
+            </div>
+            <div class="name">
+              <h5>
+                Neckwear
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+	<section class="price_section layout_padding">
+        <div class="container">
+          <div class="heading_container">
+            <h2>
+              Our Jewellery Auction
+            </h2>
+          </div>
+          <div class="price_container">
+            <div class="box">
+              <div class="name">
+                <h6>
+                  Diamond Ring
+                </h6>
+              </div>
+              <div class="img-box">
+                <img src="static/images/a.webp" alt="">
+              </div>
+              <div class="detail-box">
+                <h5>
+                  $<span>1000.00</span>
+                </h5>
+                <a href="">
+                  BID Now
+                </a>
+              </div>
+            </div>
+            <div class="box">
+              <div class="name">
+                <h6>
+                  Diamond Ring
+                </h6>
+              </div>
+              <div class="img-box">
+                <img src="static/images/2_3_3000x.webp" alt="">
+              </div>
+              <div class="detail-box">
+                <h5>
+                  $<span>1000.00</span>
+                </h5>
+                <a href="">
+                  BID Now
+                </a>
+              </div>
+            </div>
+            <div class="box">
+              <div class="name">
+                <h6>
+                  Diamond Ring
+                </h6>
+              </div>
+              <div class="img-box">
+                <img src="static/Images/d1.jpeg" alt="">
+              </div>
+              <div class="detail-box">
+                <h5>
+                  $<span>1000.00</span>
+                </h5>
+                <a href="">
+                  BID Now
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-center">
+            <a href="" class="price_btn">
+              See More
+            </a>
+          </div>
+        </div>
+      </section>
+	<!-- <div class="row">
 	<div class="col-md-12">
 		<div>
 			<h2 align="left" style="display: block; color: black; font-size: 2em; font-family: Montserrat-Regular;"><span> Current Auctions </span> </h2>
@@ -112,7 +294,7 @@
 	</div>
         </div>
 		</div>
-	</div>
+	</div> --> 
 
 {% if loggedIn %}
 <div class="row">
@@ -156,4 +338,39 @@
 		</div>
 	</div>
 {% endif %}
+<div class="footer-clean">
+    <footer>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-sm-4 col-md-3 item">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="#">Web design</a></li>
+                        <li><a href="#">Development</a></li>
+                        <li><a href="#">Hosting</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-4 col-md-3 item">
+                    <h3>About</h3>
+                    <ul>
+                        <li><a href="#">Company</a></li>
+                        <li><a href="#">Team</a></li>
+                        <li><a href="#">Legacy</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-4 col-md-3 item">
+                    <h3>Careers</h3>
+                    <ul>
+                        <li><a href="#">Job openings</a></li>
+                        <li><a href="#">Employee success</a></li>
+                        <li><a href="#">Benefits</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 item social"><a href="#"><i class="icon ion-social-facebook"></i></a><a href="#"><i class="icon ion-social-twitter"></i></a><a href="#"><i class="icon ion-social-snapchat"></i></a><a href="#"><i class="icon ion-social-instagram"></i></a>
+                    <p class="copyright">Company Name © 2018</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+  </div>
 {% endblock %}

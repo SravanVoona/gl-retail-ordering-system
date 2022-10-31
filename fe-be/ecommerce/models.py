@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import unique
 from email.policy import default
 from ecommerce import db
 
@@ -18,8 +19,12 @@ class User(db.Model):
     zipcode = db.Column(db.String(100), unique=False, nullable=False)
     email = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
+    companyName = db.Column(db.String(20), nullable=True)
+    panNumber = db.Column(db.String(10), nullable=True)
+    adhaarcardNumber = db.Column(db.String(15), nullable=True)
     isadmin = db.Column(db.Boolean, nullable=False, default = False)
     active = db.Column(db.Boolean, nullable=False, default = True)
+    isvendor = db.Column(db.Boolean, nullable=False, default = False)
 
     def __repr__(self):
         return f"User('{self.fname}', '{self.lname}'), '{self.password}', " \
@@ -30,7 +35,7 @@ class User(db.Model):
 class Category(db.Model):
     __table_args__ = {'extend_existing': True}
     categoryid = db.Column(db.Integer, primary_key=True)
-    category_name = db.Column(db.String(100), nullable=False)
+    category_name = db.Column(db.String(100), unique=True, nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
@@ -41,6 +46,7 @@ class Product(db.Model):
 
     __table_args__ = {'extend_existing': True}
     productid = db.Column(db.Integer, primary_key=True)
+    vendorid = db.Column(db.Integer, db.ForeignKey('user.userid'), nullable=False)
     sku = db.Column(db.String(50), nullable=False)
     product_name = db.Column(db.String(1000), nullable=False)
     description = db.Column(db.String(1000), nullable=False)
@@ -60,10 +66,13 @@ class Product(db.Model):
 
 class ProductCategory(db.Model):
     __table_args__ = {'extend_existing': True}
-    categoryid = db.Column(db.Integer, db.ForeignKey('category.categoryid'), nullable=False, primary_key=True)
-    productid = db.Column(db.Integer, db.ForeignKey('product.productid'), nullable=False, primary_key=True)
+    serialNumber = db.Column(db.Integer, primary_key=True)
+    categoryid = db.Column(db.Integer, db.ForeignKey('category.categoryid'), nullable=False)
+    productid = db.Column(db.Integer, db.ForeignKey('product.productid'), nullable=True)
+    vendorid = db.Column(db.Integer, db.ForeignKey('user.userid'), nullable=True)
     created_on = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
+    
+    
     def __repr__(self):
         return f"Product('{self.categoryid}', '{self.productid}')"
 
@@ -123,4 +132,4 @@ class SaleTransaction(db.Model):
     response = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        return f"Order('{self.transactionid}', '{self.orderid}','{self.transactiondate}','{self.amount}', '{self.cc_number}','{self.cc_type}','{self.response}')"
+        return f"Order('{self.transactionid}', '{self.orderid}','{self.transaction_date}','{self.amount}', '{self.cc_number}','{self.cc_type}','{self.response}')"
