@@ -20,12 +20,6 @@
 --
 use grocart;
 
-LOCK TABLES `cart` WRITE;
-/*!40000 ALTER TABLE `cart` DISABLE KEYS */;
-INSERT INTO `cart` VALUES (1,202213541,1,'4.340 g');
-/*!40000 ALTER TABLE `cart` ENABLE KEYS */;
-UNLOCK TABLES;
-
 --
 -- Dumping data for table `category`
 --
