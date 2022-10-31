@@ -235,7 +235,6 @@ def addToCartProduct():
 @app.route("/cart")
 def cart():
     if isUserLoggedIn():
-        loadapi = yaml.safe_load(open('config.yaml'))
         loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
         cartdetails, totalsum, tax = getusercartdetails()
         
