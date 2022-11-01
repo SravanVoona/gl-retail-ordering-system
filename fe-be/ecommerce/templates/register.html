@@ -1,98 +1,111 @@
+
 {% extends "header.html"  %}
 {% block content %}
 
 <form action="/register" method="POST" type="submit" onsubmit="return registerValidate();">
+    <div class="form-group">
     <div class="row">
-        <div class="form1"><p> *Email: </p></div>
-        <div class="forminput"><p><input type="email" name="email" id="regemail"></p></div>
+        <div class="col-md-1 font-weight-bold" ><Label><strong>Email:</strong></Label></div>
+        <div class="col-md-4">
+            <input type="email" name="email" id="regemail" class="form-control" style="border: 1px solid #000" >
+        </div>
     </div>
     <br>
     <div class="row">
-        <div class="form1"><p>*Password: </p></div>
-        <div class="forminput"><p><input type="password" name="password" id="password" required></p></div>
+        <div class="col-md-1 font-weight-bold"><Label><strong>Password:</strong></Label></div>
+        <div class="col-md-4">
+            <input type="password" name="password"  class="form-control" id="password" required style="border: 1px solid #000">
+        </div>&nbsp;&nbsp;&nbsp;&nbsp;
+        <div class="col-md-2 font-weight-bold"><Label><strong>Confirm Password:</strong></Label></div>
+        <div class="col-md-4">
+            <input type="password"  class="form-control" name="cpassword" id="cpassword" required style="border: 1px solid #000">
+        </div>
     </div>
     <br>
     <div class="row">
-        <div class="form1"> <p>*Confirm Password: </p></div>
-        <div class="forminput"> <p> <input type="password" name="cpassword" id="cpassword" required></p></div>
+        <div class="col-md-1 font-weight-bold"><Label><strong>First Name:</strong></Label></div>
+        <div class="col-md-4">
+             <input type="text"  class="form-control" name="firstName" id="regfirstName" required style="border: 1px solid #000">
+         </div>&nbsp;&nbsp;&nbsp;&nbsp;
+         <div class="col-md-2 font-weight-bold"><Label><strong>Last Name:</strong></Label></div>
+         <div class="col-md-4"> 
+             <input type="text"  class="form-control" name="lastName"  id="reglastName"  required style="border: 1px solid #000">
+         </div>
+    </div>     
+    <br>
+    <div class="row">
+        <div class="col-md-1 font-weight-bold"><Label><strong>Address:</strong></Label></div>
+            <div class="col-md-6">
+                <input type="text" class="form-control" name="address" required style="border: 1px solid #000">
+            </div>
     </div>
     <br>
     <div class="row">
-        <div class="form1"><p>*First Name: </p> </div>
-        <div class="forminput"> <p> <input type="text" name="firstName" id="regfirstName" required></p></div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="form1"><p>*Last Name: </p></div>
-        <div class="forminput">  <p> <input type="text" name="lastName"  id="reglastName"  required></p></div>
-    </div>
-    <br>
-    <div class="row">
-            <div class="form1"><p>*Address: </p></div>
-            <div class="forminput"><p><input type="text" name="address" required></p></div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="form1"><p>*Country: </p></div>
-        <div class="forminput">
-        <p>
-        <select id="countySel" name="country" size="1" required>
+        <div class="col-md-1 font-weight-bold"><Label><strong>Country:</strong></Label></div>
+        <div class="col-md-4">
+        
+        <select id="countySel" name="country" size="1" class="form-control" style="font-size: larger;border: 1px solid #000;" required >
             <option value="" selected="selected">-- Select Country --</option>
         </select>
-        </p>
+        
         </div>
     </div>
     <br>
     <div class="row">
-        <div class="form1"><p>*State: </p></div>
-        <div class="forminput">
-            <p>
-            <select id="stateSel" name="state" size="1" required>
+        <div class="col-md-1 font-weight-bold"><Label><strong>State:</strong></Label></div>
+        
+        <div class="col-md-4">
+            
+            <select id="stateSel" name="state" size="1" class="form-control" style="font-size: larger;border: 1px solid #000;" required>
                 <option value="" selected="selected">-- Select State--</option>
             </select>
-            </p>
+            
         </div>
     </div>
     <br>
     <div class="row">
-        <div class="form1"><p>*City: </p></div>
-        <div class="forminput">
-            <p>
-            <select id="citySel" name="city" size="1" required>
+        <div class="col-md-1 font-weight-bold"><Label><strong>City:</strong></Label></div>
+        
+        <div class="col-md-4">
+            <select id="citySel" name="city" size="1" class="form-control" style="font-size: larger;border: 1px solid #000;" required>
                 <option value="" selected="selected">-- Select City--</option>
             </select>
-            </p>
+            
         </div>
     </div>
 
     <br>
     <div class="row">
-        <div class="form1"><p>*Zip Code: </p></div>
-        <div> <p> <input type="text" name="zipcode" id="regzipcode" placeholder="123456" required></p></div>
+        <div class="col-md-1 font-weight-bold"><Label><strong>ZipCode:</strong></Label></div>
+        <div class="col-md-4"> 
+            <input type="text" class="form-control" name="zipcode" id="regzipcode" placeholder="123456" required style="border: 1px solid #000">
+        </div>
     </div>
     <br>
     <div class="row">
-        <div class="form1"><p>*Phone Number: </p> </div>
-        <div> <p> <input type="text" name="phone" id="regphone" placeholder="1234567890" required></p></div>
+        <div class="col-md-1 font-weight-bold"><Label><strong>Phone Number:</strong></Label></div>
+        <div class="col-md-4"> <input type="text" name="phone" class="form-control" id="regphone" required style="border: 1px solid #000"></div>
     </div>
     <br>
+    <br>
     <div class="row">
-        <div class="form1"></div>
-        <div> <p><input type="submit" value="Register"></p></div>
+        <div class="btn btn-success m-2">
+        <div><input type="submit" value="Register" class="btn btn-success m-2"></div>
     </div>
+    </div>
+</div>
+<script>
+    // Get the modal
+    var modal = document.getElementById('id01');
 
-    <script>
-        // Get the modal
-        var modal = document.getElementById('id01');
-
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
         }
-    </script>
+    }
+</script>
 </form>
-
-
 {% endblock content %}
+
+
