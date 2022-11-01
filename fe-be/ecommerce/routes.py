@@ -445,6 +445,7 @@ def addProduct():
             flash(f'Product {form.productName} added successfully', 'success')
             #return render_template("vendor.html")
             return redirect(url_for('getVendorProducts'))
+        flash("Something went wrong. Please try again.")
         return render_template("addProduct.html", form=form, legend="New Product")
     flash("Vendor login is required!", "error")    
     return redirect(url_for('root'))
@@ -455,14 +456,13 @@ def addProduct():
 def addCategory():
     if isUserVendor():
         form = addCategoryForm()
-        vendorid = getUserId()
-        #categoryId = Category.query.filter_by(category_name=form.category_name.data).get_or_404(Category.categoryid)
         if form.validate_on_submit():
             category = Category(category_name=form.category_name.data)
             db.session.add(category)
             db.session.commit()
             flash(f'Category {form.category_name.data}! added successfully', 'success')
             return redirect(url_for('getVendorCategories'))
+        flash("Something went wrong, please check category name and try again. 'Duplicate Category error'")
         return render_template("addCategory.html", form=form)
     flash("Vendor login is required!","error")
     return redirect(url_for('root'))
