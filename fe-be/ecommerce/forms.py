@@ -297,13 +297,17 @@ def getusercartdetails():
 
     productsincart = Product.query.join(Cart, (Product.productid == Cart.productid)  &  (db_norm(Product.weight) == db_norm(Cart.subproductid)) )\
         .add_columns(Product.productid, Product.product_name, Product.discounted_price, Cart.quantity, Product.image) \
-        .add_columns(Product.discounted_price * Cart.quantity).filter(
-        Cart.userid == userId[0])
+        .add_columns(Product.discounted_price * Cart.quantity) \
+        .add_columns(Cart.bidprice) \
+        .filter(Cart.userid == userId[0])
     
     totalsum = 0
 
     for row in productsincart:
-        totalsum += row[6]
+        if row[7] is not None:
+            totalsum += row[7]
+        else:
+            totalsum += row[6]
 
     tax = ("%.2f" % (.06 * float(totalsum)))
 
@@ -361,15 +365,6 @@ def extractOrderdetails(request, totalsum):
     email = request.form['email']
     address = request.form['address']
     phone = request.form['phone']
-    city = request.form['city']
-    state = request.form['state']
-    cctype = request.form['cardtype']
-    ccnumber = request.form['cardnumber']
-    cardname = request.form['cardname']
-    expmonth = request.form['expmonth']
-    expyear = request.form['expyear']
-    provider = request.form['provider']
-    cvv = request.form['cvv']
     orderdate = datetime.utcnow()
     userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
     userId = userId[0]
@@ -385,12 +380,10 @@ def extractOrderdetails(request, totalsum):
     #  products table
     addOrderedproducts(userId, orderid[0])
     # add transaction details to the table
-    updateSalestransaction(totalsum, ccnumber, orderid[0], cctype)
+    updateSalestransaction(totalsum, "123412341234", orderid[0], "amex")
 
-    # remove ordered products from cart after transaction is successful
-    removeordprodfromcart(userId)
     # sendtextconfirmation(phone,fullname,orderid)
-    return (email, fullname, orderid, address, fullname, phone, provider)
+    return (email, fullname, orderid, address, fullname, phone)
 
 
 # adds data to orderdproduct table
@@ -425,6 +418,36 @@ def updateSalestransaction(totalsum, ccnumber, orderid, cctype):
 
 # sends email for order confirmation
 
-def sendEmailconfirmation(email, username, ordernumber, phonenumber, provider):
+def sendEmailconfirmation(email, username, ordernumber, phonenumber):
     return 1
 
+
+#Get user specific ordered product details
+
+def getOrderedProducts(userId):
+    orderIDs = Order.query.with_entities(Order.orderid, Order.order_date).filter(Order.userid == userId).all()
+    orders = [x[0] for x in orderIDs]
+    orderedProducts = []
+
+    for i in orders:
+        oneProduct = OrderedProduct.query.filter(OrderedProduct.orderid == i).first()
+        if oneProduct: orderedProducts.append(oneProduct)
+
+    return (orderIDs, orderedProducts)
+
+
+# for adding bidding product to the cart
+def persistAuctionToCart(productId, userId, bidPrice):
+
+    #product_record = getProductDetails(productId)
+    products = Product.query.with_entities(Product.productid, Product.weight, Product.sub_product_id).filter(Product.productid == productId).all()
+    for product in products:
+        subproductid = product['weight']
+    #print(subproductid)
+    cart = Cart(userid=userId, productid=productId,subproductid=subproductid, quantity=1, bidprice = bidPrice)
+
+    db.session.merge(cart)
+    db.session.flush()
+    db.session.commit()
+    
+    return

@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import unique
+from email.policy import default
 from ecommerce import db
 
 db.Model.metadata.reflect(db.engine)
@@ -90,6 +91,7 @@ class Cart(db.Model):
     productid = db.Column(db.Integer, db.ForeignKey('product.productid'), nullable=False, primary_key=True)
     quantity = db.Column(db.Integer, nullable=False)
     subproductid = db.Column(db.String(200), nullable=False)
+    bidprice = db.Column(db.DECIMAL, nullable=True, default = None)
 
     def __repr__(self):
         return f"Cart('{self.userid}', '{self.productid}, '{self.quantity}', '{self.subproductid}')"

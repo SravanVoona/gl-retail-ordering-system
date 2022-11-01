@@ -12,10 +12,16 @@ from flask import Flask, Response, render_template, request
 import json
 import requests
 import yaml
-
+import razorpay
+from flask import jsonify
+import time
 
 loadapi = yaml.safe_load(open('config.yaml'))
+payapi = yaml.safe_load(open('api.yaml'))
 
+rz_api = payapi['api_id']
+rz_key = payapi['api_key']
+client = razorpay.Client(auth=(rz_api, rz_key)) 
 
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
@@ -98,8 +104,16 @@ def vendorregister():
 def root():
     loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
     session['firstname'] = firstName
-    allProductDetails = getAllProducts()
-    allProductsMassagedDetails = massageItemData(allProductDetails)
+    bidding_api_url = loadapi['biddingEngineUrl'] + '/auction_products'
+    
+    response = requests.get(bidding_api_url)
+    prod_json = response.json()
+    #print(prod_json)
+    bidProductsDetails = getRecommendedProducts(prod_json)
+    bidProductsMassagedDetails = massageItemData(bidProductsDetails)
+    
+    #allProductDetails = getAllProducts()
+    #allProductsMassagedDetails = massageItemData(allProductDetails)
     categoryData = getCategoryDetails()
 
     if loggedIn:
@@ -115,12 +129,12 @@ def root():
 
         recommendedProducts = getRecommendedProducts(list)
         recommendedProductsMassagedDetails = massageItemData(recommendedProducts)
-        return render_template('index.html', itemData=allProductsMassagedDetails, loggedIn=loggedIn,
+        return render_template('index.html', itemData=bidProductsMassagedDetails, loggedIn=loggedIn,
                                firstName=firstName,
                                productCountinKartForGivenUser=productCountinKartForGivenUser,
                                categoryData=categoryData, recommendedProducts=recommendedProductsMassagedDetails)
     else:
-        return render_template('index.html', itemData=allProductsMassagedDetails, loggedIn=loggedIn,
+        return render_template('index.html', itemData=bidProductsMassagedDetails, loggedIn=loggedIn,
                                firstName=firstName,
                                productCountinKartForGivenUser=productCountinKartForGivenUser,
                                categoryData=categoryData)
@@ -175,7 +189,17 @@ def productDescription():
     productid = request.args.get('productId')
     productDetailsByProductId = getProductDetails(productid)
 
+    # get auction Information
+    api_url = loadapi['biddingEngineUrl'] + '/auction'
+    params = {"productId": productid}
+    response = requests.get(api_url, params=params)
+    response_json = response.json()
+    auction_info = dict(response_json)
+    #print(auction_info)
+    biddableProduct = True if 'status' in auction_info and auction_info['status'] == 'open' else False
+    #print(auction_info)
     
+    # get recommended Items
     api_url = loadapi['recommendationServiceUrl']
     products = {"product_id": productid}
     response = requests.post(api_url, json=products)
@@ -188,11 +212,14 @@ def productDescription():
 
     recommendedProducts = getRecommendedProducts(list)
     recommendedProductsMassagedDetails = massageItemData(recommendedProducts)
+    print(type(productDetailsByProductId))
 
     return render_template("productDescription.html", data=productDetailsByProductId, loggedIn=loggedIn,
                            firstName=firstName, productCountinKartForGivenUser=noOfItems,
-                           recommendedProducts=recommendedProductsMassagedDetails
-                           #recommendedProducts = []
+                           recommendedProducts=recommendedProductsMassagedDetails,
+                           biddableProduct = biddableProduct,
+                           auctionDetails = auction_info,
+                           biddingEngineUrl = loadapi['biddingEngineUrl'] + '/create_bid'
                            )
 
 
@@ -261,9 +288,8 @@ def addToCartProduct():
 @app.route("/cart")
 def cart():
     if isUserLoggedIn():
-        loadapi = yaml.safe_load(open('config.yaml'))
         loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
-        cartdetails, totalsum, tax = getusercartdetails();
+        cartdetails, totalsum, tax = getusercartdetails()
         
         if cartdetails.count() > 0:
             products = {"product_id": cartdetails[0].productid}
@@ -601,28 +627,12 @@ def removeFromCart():
 def checkoutForm():
     if isUserLoggedIn():
         cartdetails, totalsum, tax = getusercartdetails()
-        return render_template("checkoutPage.html", cartData=cartdetails, totalsum=totalsum, tax=tax)
+        loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
+        return render_template("checkoutPage.html", cartData=cartdetails, totalsum=totalsum, tax=tax,
+                                productCountinKartForGivenUser=productCountinKartForGivenUser, loggedIn=loggedIn,
+                               firstName=firstName)
     else:
         return redirect(url_for('loginForm'))
-
-
-@app.route("/createOrder", methods=['GET', 'POST'])
-def createOrder():
-    loggedIn = getLoginUserDetails()
-    totalsum = request.args.get('total')
-    email, username, ordernumber, address, fullname, phonenumber, provider = extractOrderdetails(request, totalsum)
-    if email:
-        sendEmailconfirmation(email, username, ordernumber, phonenumber, provider)
-
-    return render_template("OrderPage.html", email=email, username=username, ordernumber=ordernumber,
-                           address=address, fullname=fullname, phonenumber=phonenumber, loggedIn=loggedIn)
-
-
-@app.route("/orders", methods=['GET', 'POST'])
-def orders():
-    loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
-    return render_template('404.html', loggedIn=loggedIn, firstName=firstName)
-
 
 @app.route("/profile", methods=['GET', 'POST'])
 def profile():
@@ -662,3 +672,139 @@ def seeTrends():
     return render_template('trends.html',
                            div_placeholder=Markup(my_plot_div), trendtype=trendtype
                            )
+
+## Payment module implementation 
+
+@app.route("/createOrder", methods=['GET', 'POST'])
+def createOrder():
+    if isUserLoggedIn():
+        loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
+    totalsum = request.args.get('total')
+    float_totalsum = round(float(request.args.get('total')),2)
+    amount_payable = int(str(float_totalsum).replace(".",""))
+    email, username, ordernumber, address, fullname, phonenumber = extractOrderdetails(request, totalsum)
+
+    if amount_payable > 1500000:
+        amount_payable = 1500000
+
+    data = { "amount": amount_payable, "currency": "INR", "receipt": str(ordernumber[0]) } 
+    payment = client.order.create(data=data)
+
+    cartdetails, totalsum, tax = getusercartdetails()
+
+    if email:
+        sendEmailconfirmation(email, username, ordernumber, phonenumber)
+
+    return render_template("pay.html", payment=payment, cartData=cartdetails, totalsum=totalsum, tax=tax,
+                                productCountinKartForGivenUser=productCountinKartForGivenUser, loggedIn=loggedIn,
+                               firstName=firstName)
+
+import pandas as pd
+
+@app.route("/paymentSuccess", methods=['POST'])
+def paymentSuccess():
+    time.sleep(10)
+    payments = client.payment.all()
+    p_df = pd.DataFrame(payments['items'])
+    rzp_order_id = request.args.get('order')
+    this_transaction = pd.DataFrame
+    this_transaction = p_df[p_df['order_id'] == rzp_order_id]
+    status = this_transaction['status']
+    print(status)
+    if( str(status).split()[1] == 'captured' ) :
+        userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
+        removeordprodfromcart(userId)
+        print("Payment Succeeded.!")
+    else:
+        print("Payment failed.!")
+
+    return redirect(url_for('root'))
+
+
+
+@app.route("/orders", methods=['GET', 'POST'])
+def orders():
+    loggedIn, firstName, productCountinKartForGivenUser = getLoginUserDetails()
+    userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
+    orders, orderDetails = getOrderedProducts(userId)
+    orderDict = {t[0]: t[1] for t in orders}
+
+    data = []
+    for od in orderDetails:
+        d = {}
+        product = getProductDetails(od.productid)
+        d['product_name'] = product.product_name
+        d['image'] = product.image
+        d['description'] = product.description
+        d['quantity'] = od.quantity
+        d['ordered_date'] = orderDict[od.orderid]
+        data.append(d)
+
+    return render_template('orderDetails.html', loggedIn=loggedIn, firstName=firstName, details=data,
+                                productCountinKartForGivenUser=productCountinKartForGivenUser)
+
+
+@app.route("/createBid", methods = ["GET"])
+def createBid():
+    print("Create Bid")
+    if isUserLoggedIn():
+        userId = getUserId()
+        
+        # get auction Information
+        api_url = loadapi['biddingEngineUrl'] + '/create_bid'
+        productId = int(request.args.get('productId'))
+        bidAmount = float(request.args.get('bidAmount'))
+        payload = json.dumps({"productId": productId, "userId": userId, "bidAmount": bidAmount})
+        print(payload)
+        #response = requests.post(url = api_url, data=payload)
+        headers = {'Content-Type': 'application/json'}
+        response = requests.request("POST", api_url, headers=headers, data=payload)
+        #print(response.text)
+        if 'created' in response.text.lower():
+            flash('Bid Created', 'success')
+        else:
+            flash(str(response.text), 'danger')
+         
+        return redirect(url_for('productDescription', productId=productId))
+    else:
+        flash('please log in !!', 'success')
+        return redirect(url_for('root'))
+    
+@app.route("/addAuctionToCart", methods=['POST'])
+def addAuctionToCart():
+  try:
+    payload = request.get_json()
+    #print(payload)
+    userId = int(payload["userId"])
+    productId  = int(payload["productId"])
+    bidPrice = float(payload["bidPrice"])
+    persistAuctionToCart(productId, userId, bidPrice)
+    #print('persistAuctionToCart')
+    return jsonify({"status": 200})
+  except Exception as e:
+    return jsonify({"status": 400, "err": str(e)})
+
+
+@app.route("/bids", methods=['GET'])
+def getBids():
+    ' In Progress '
+    try:
+        # get logged in userid
+        users = User.query.with_entities(User.userid).filter(User.email == session['email']).all()
+        for user in users:
+            userId = user['userid']
+        
+        # get bids Information
+        api_url = loadapi['biddingEngineUrl'] + '/user_bids'
+        params = {"userId": userId}
+        response = requests.get(api_url, params=params)
+        response_json = response.json()
+        user_bids = list(response_json)
+            
+        
+        return render_template('userBids.html', bids=user_bids)
+    except Exception as e:
+        return jsonify({"status": 400, "err": str(e)})
+    
+    
+
