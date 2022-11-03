@@ -18,7 +18,7 @@
 --
 -- Dumping data for table `cart`
 --
-use grocart;
+use regalia;
 
 --
 -- Dumping data for table `category`

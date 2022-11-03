@@ -85,7 +85,7 @@ class Cart(db.Model):
     bidprice = db.Column(db.DECIMAL, nullable=True, default = None)
 
     def __repr__(self):
-        return f"Cart('{self.userid}', '{self.productid}, '{self.quantity}', '{self.subproductid}')"
+        return f"Cart('{self.userid}', '{self.productid}, '{self.quantity}', '{self.subproductid}', '{self.bidprice}')"
 
 
 class Order(db.Model):
@@ -106,9 +106,11 @@ class OrderedProduct(db.Model):
     productid = db.Column(db.Integer,db.ForeignKey('product.productid'), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     subproductid = db.Column(db.String(200), nullable=False)
+    status = db.Column(db.String(100), nullable=True)
 
     def __repr__(self):
-        return f"Order('{self.ordproductid}', '{self.orderid}','{self.productid}','{self.quantity}','{self.subproductid}')"
+        return f"Order('{self.ordproductid}', '{self.orderid}','{self.productid}','{self.quantity}','{self.subproductid}', \
+                                        '{self.status}')"
 
 
 
@@ -117,10 +119,8 @@ class SaleTransaction(db.Model):
     transactionid = db.Column(db.Integer, primary_key=True)
     orderid = db.Column(db.Integer,db.ForeignKey('order.orderid'), nullable=False)
     transaction_date = db.Column(db.DateTime,nullable=False)
-    amount = db.Column(db.DECIMAL, nullable=False)
-    cc_number=db.Column(db.String(50), nullable=False)
-    cc_type = db.Column(db.String(50), nullable=False)
+    razorpay_id = db.Column(db.String(100), nullable=False)
     response = db.Column(db.String(50), nullable=False)
 
     def __repr__(self):
-        return f"Order('{self.transactionid}', '{self.orderid}','{self.transactiondate}','{self.amount}', '{self.cc_number}','{self.cc_type}','{self.response}')"
+        return f"Order('{self.transactionid}', '{self.orderid}','{self.transaction_date}','{self.razorpay_id}','{self.response}')"

@@ -339,23 +339,18 @@ def extractOrderdetails(request, totalsum):
     orderid = Order.query.with_entities(Order.orderid).filter(Order.userid == userId).order_by(
         Order.orderid.desc()).first()
 
-    # add details to ordered;
-    #  products table
-    addOrderedproducts(userId, orderid[0])
-    # add transaction details to the table
-    updateSalestransaction(totalsum, "123412341234", orderid[0], "amex")
-
     # sendtextconfirmation(phone,fullname,orderid)
     return (email, fullname, orderid, address, fullname, phone)
 
 
 # adds data to orderdproduct table
 
-def addOrderedproducts(userId, orderid):
+def addOrderedproducts(userId, orderid, status):
     cart = Cart.query.with_entities(Cart.productid, Cart.subproductid, Cart.quantity).filter(Cart.userid == userId)
 
     for item in cart:
-        orderedproduct = OrderedProduct(orderid=orderid, productid=item.productid, quantity=item.quantity, subproductid=item.subproductid)
+        orderedproduct = OrderedProduct(orderid=orderid, productid=item.productid, quantity=item.quantity, subproductid=item.subproductid,
+                                                status=status)
         db.session.add(orderedproduct)
         db.session.flush()
         db.session.commit()
@@ -371,9 +366,8 @@ def removeordprodfromcart(userId):
 
 # adds sales transaction
 
-def updateSalestransaction(totalsum, ccnumber, orderid, cctype):
-    salesTransaction = SaleTransaction(orderid=orderid, transaction_date=datetime.utcnow(), amount=totalsum,
-                                       cc_number=ccnumber, cc_type=cctype, response="success")
+def updateSalestransaction(orderid, razorpay_id, response):
+    salesTransaction = SaleTransaction(orderid=orderid, transaction_date=datetime.utcnow(), razorpay_id=razorpay_id, response=response)
     db.session.add(salesTransaction)
     db.session.flush()
     db.session.commit()

@@ -577,7 +577,7 @@
         "description": "Test Transaction",
         "image": "/static/images/Projectlogo3.jpg",
         "order_id": "{{payment['id']}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-        "callback_url": "/paymentSuccess?order={{payment['id']}}",
+        "callback_url": "/paymentSuccess?order={{payment['id']}}&id={{payment['receipt']}}",
         "theme": {
             "color": "#3399cc"
         }

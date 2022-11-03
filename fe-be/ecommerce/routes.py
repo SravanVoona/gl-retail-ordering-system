@@ -548,16 +548,19 @@ def paymentSuccess():
     payments = client.payment.all()
     p_df = pd.DataFrame(payments['items'])
     rzp_order_id = request.args.get('order')
+    our_order_id = request.args.get('id')
     this_transaction = pd.DataFrame
     this_transaction = p_df[p_df['order_id'] == rzp_order_id]
     status = this_transaction['status']
     print(status)
     if( str(status).split()[1] == 'captured' ) :
         userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
+        addOrderedproducts(userId, our_order_id, "Payment Processed")
         removeordprodfromcart(userId)
-        print("Payment Succeeded.!")
+        updateSalestransaction(our_order_id, rzp_order_id, "Success")
     else:
-        print("Payment failed.!")
+        addOrderedproducts(userId, our_order_id, "Payment Failed")
+        updateSalestransaction(our_order_id, rzp_order_id, "Failed")
 
     return redirect(url_for('root'))
 
