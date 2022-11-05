@@ -581,6 +581,7 @@ def orders():
         d['image'] = product.image
         d['description'] = product.description
         d['quantity'] = od.quantity
+        d['status'] = od.status
         d['ordered_date'] = orderDict[od.orderid]
         data.append(d)
 

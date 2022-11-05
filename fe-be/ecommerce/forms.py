@@ -385,7 +385,7 @@ def getOrderedProducts(userId):
     orderIDs = Order.query.with_entities(Order.orderid, Order.order_date).filter(Order.userid == userId).all()
     orders = [x[0] for x in orderIDs]
     orderedProducts = []
-
+    orders.reverse()
     for i in orders:
         oneProduct = OrderedProduct.query.filter(OrderedProduct.orderid == i).first()
         if oneProduct: orderedProducts.append(oneProduct)
