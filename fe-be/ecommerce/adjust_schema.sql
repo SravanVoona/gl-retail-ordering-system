@@ -1,4 +1,4 @@
-use regalia
+use regalia;
 
 alter table cart add column bidprice decimal(10,0);
 
