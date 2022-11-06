@@ -14,6 +14,8 @@ import yaml
 import razorpay
 from flask import jsonify
 import time
+import urllib.request
+import validators
 
 loadapi = yaml.safe_load(open('config.yaml'))
 payapi = yaml.safe_load(open('api.yaml'))
@@ -21,6 +23,10 @@ payapi = yaml.safe_load(open('api.yaml'))
 rz_api = payapi['api_id']
 rz_key = payapi['api_key']
 client = razorpay.Client(auth=(rz_api, rz_key)) 
+
+# original image
+og_cert = "original_cert.jpg"
+base_histogram = calcHistogram(og_cert)
 
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
@@ -652,4 +658,101 @@ def getBids():
         return jsonify({"status": 400, "err": str(e)})
     
     
+@app.route("/seller", methods=['GET'])
+def seller():
+    loggedIn, SellerName = getSellerLoginDetails()
+    session['SellerName'] = SellerName
+    categoryData = getCategoryDetails()
+    if loggedIn:
+        return render_template('sellerIndex.html', loggedIn=loggedIn, SellerName=SellerName,
+             categoryData=categoryData)
+    else:
+        return render_template('sellerIndex.html')
 
+@app.route("/sellerLoginForm")
+def sLoginForm():
+    return render_template("sellerLogin.html")
+
+@app.route("/sellerLogin", methods=['POST', 'GET'])
+def slogin():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+        if is_valid_seller(email, password):
+            session['email'] = email
+            return redirect(url_for('seller'))
+        else:
+            error = 'Invalid UserId / Password'
+            return render_template('sellerIndex.html', error=error)
+
+@app.route("/sellerLogout")
+def slogout():
+    session.pop('email', None)
+    session.pop('SellerName', None)
+    return redirect(url_for('seller'))
+
+@app.route("/SellerRegisterForm")
+def sregistrationForm():
+    return render_template("sellerRegister.html")
+
+
+@app.route("/SellerRegister", methods=['GET', 'POST'])
+def sregister():
+    if request.method == 'POST':
+        # Parse form data
+        msg = extractAndPersistSellerDataFromForm(request)
+        if msg:
+            # return render_template('index.html', error=msg)
+            flash('Registered Successfully', 'success')
+            return redirect(url_for('seller'))
+        else:
+            error="Registration failed"
+            return render_template('sellerIndex.html', error=error)
+
+@app.route("/sellerUploadForm")
+def sUpload():
+    return render_template("sellerUpload.html")
+
+@app.route("/seller/addProduct", methods=['GET', 'POST'])
+def addSellerProduct():
+    loggedIn, SellerName = getSellerLoginDetails()
+    form = addSellerProductForm()
+    form.category.choices = [(row.categoryid, row.category_name) for row in Category.query.all()]
+    if form.validate_on_submit():
+
+        certURL = form.certificate.data
+        urllib.request.urlretrieve(certURL, 'temp_cert.jpg')
+        valid_certificate = validateCert('temp_cert.jpg', base_histogram)
+        os.remove('temp_cert.jpg')
+        if valid_certificate:
+            imageURL = form.image.data
+            validImageURL = validators.url(imageURL)
+            if not validImageURL:
+                flash(f'Image URL is not valid. Product not added.!', 'failure')
+                return redirect(url_for('seller'))
+            product = Product(sku=form.sku.data, product_name=form.productName.data,
+                                description=form.productDescription.data, image=imageURL,
+                                stock=form.productQuantity.data,
+                                discounted_price=form.productPrice.data, product_rating=0,
+                                product_review=" ", regular_price=form.productPrice.data,
+                                sub_product_id=0, weight=form.weight.data, brand=SellerName,
+                                certificate = form.certificate.data)
+            db.session.add(product)
+            db.session.commit()
+            product_category = ProductCategory(categoryid=form.category.data, productid=product.productid)
+            db.session.add(product_category)
+            db.session.commit()
+            flash(f'Valid Certificate. Product added successfully', 'success')
+            return redirect(url_for('seller'))
+        else:
+            flash(f'Certificate Invalid. Please check.', 'failure')
+            return redirect(url_for('seller'))
+
+    return render_template("sellerAddProduct.html", form=form, legend="New Product",
+                                loggedIn=loggedIn, SellerName=SellerName)
+
+@app.route("/seller/viewProductsList", methods=['GET'])
+def getSellerProducts():
+    loggedIn, SellerName = getSellerLoginDetails()
+    products = Product.query.filter(Product.brand == SellerName).order_by(Product.sku, Product.sub_product_id).all()
+    return render_template('sellerProducts.html', products=products, loggedIn=loggedIn, SellerName=SellerName)

@@ -1,0 +1,37 @@
+{% extends "sellerLayout.html"  %}
+{% block content %}
+
+<span style="justify-content: center">
+<div class="container">
+<form action="/sellerLogin" method="POST" type="submit" onsubmit="return registerSValidate();">
+    <div class="row">
+        <div class="form1"><p> *Email: </p></div>
+        <div class="forminput"><p><input type="email" name="email" id="regemail"></p></div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="form1"><p>*Password: </p></div>
+        <div class="forminput"><p><input type="password" name="password" id="password" required></p></div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="form1"></div>
+        <div> <p><input type="submit" value="Login"></p></div>
+    </div>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById('id01');
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</form>
+</div>
+<span>
+
+{% endblock content %}

@@ -53,9 +53,10 @@ class Product(db.Model):
     sub_product_id = db.Column(db.String(200), nullable=True)
     brand = db.Column(db.String(200), nullable=True)
     weight = db.Column(db.String(200), nullable=True)
+    certificate = db.Column(db.String(200), nullable=True)
 
     def __repr__(self):
-        return f"Product('{self.productid}','{self.product_name}','{self.description}', '{self.image}',  '{self.stock}','{self.regular_price}', '{self.discounted_price}', '{self.sub_product_id}', '{self.brand}','{self.weight}')"
+        return f"Product('{self.productid}', '{self.certificate}', '{self.product_name}','{self.description}', '{self.image}',  '{self.stock}','{self.regular_price}', '{self.discounted_price}', '{self.sub_product_id}', '{self.brand}','{self.weight}')"
 
 
 class ProductCategory(db.Model):
@@ -124,3 +125,24 @@ class SaleTransaction(db.Model):
 
     def __repr__(self):
         return f"Order('{self.transactionid}', '{self.orderid}','{self.transaction_date}','{self.razorpay_id}','{self.response}')"
+
+
+class Seller(db.Model):
+    __table_args__ = {'extend_existing': True}
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+    address = db.Column(db.String(100), unique=False, nullable=False)
+    city = db.Column(db.String(100), unique=False, nullable=False)
+    state = db.Column(db.String(100), unique=False, nullable=False)
+    country = db.Column(db.String(100), unique=False, nullable=False)
+    zipcode = db.Column(db.String(100), unique=False, nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+    PAN = db.Column(db.String(20), nullable=False)
+    UID = db.Column(db.DECIMAL, nullable=False)
+
+    def __repr__(self):
+        return f"Seller('{self.id}', '{self.name}', '{self.password}',  \
+               '{self.address}', '{self.city}', '{self.state}', '{self.country}', \
+               '{self.zipcode}','{self.email}','{self.phone}','{self.PAN}','{self.UID}')"     

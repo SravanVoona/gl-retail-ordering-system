@@ -1,0 +1,71 @@
+{% extends "sellerLayout.html"  %}
+{% block content %}
+<br>
+<p> {{ error }} </p>
+<div class="container">
+<div class="row">
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                <span>{{ message }}</span>
+                </button>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+</div>
+</div>
+<span style="justify-content: center">
+	<img src="static/images/jew_one.jfif" style="width:850px;height:250px;">
+<div style="position: center;">
+	<br>
+	{% if not loggedIn %}
+		<div class="container">
+			<tr>
+				<td>
+					<button type="button" style="background-color: #4CAF50; border: none; color: white; padding: 15px 32px;
+					text-align: center; text-decoration: none; display: inline-block; font-size: 16px;"
+									onclick="document.getElementById('id01').style.display='none'"
+										class="registerbtn"><a href="/SellerRegisterForm">Seller Register</a></button>
+				</td>
+			</tr>
+			<br><br>
+			<tr>
+				<td>
+					<button type="button" style="background-color: #4CAF50; border: none; color: white; padding: 15px 32px;
+					text-align: center; text-decoration: none; display: inline-block; font-size: 16px;"
+									onclick="document.getElementById('id01').style.display='none'"
+										class="registerbtn"><a href="/sellerLoginForm">Seller Login</a></button>	
+				</td>
+			</tr>
+		</div>
+	{% else %}
+		<br><br>
+		<div class="container">
+			<h2> Welcome {{SellerName}}</h2>
+			<br><br><br><br>
+			<tr>
+				<td>
+					<button type="button" style="background-color: #4CAF50; border: none; color: white; padding: 15px 32px;
+					text-align: center; text-decoration: none; display: inline-block; font-size: 16px;"
+									onclick="document.getElementById('id01').style.display='none'"
+										class="registerbtn"><a href="/seller/addProduct">Add Product</a></button>	
+				</td>
+			</tr>
+			<br><br><br><br>
+			<tr>
+				<td>
+					<button type="button" style="background-color: #4CAF50; border: none; color: white; padding: 15px 32px;
+					text-align: center; text-decoration: none; display: inline-block; font-size: 16px;"
+									onclick="document.getElementById('id01').style.display='none'"
+										class="registerbtn"><a href="/seller/viewProductsList">View My Products</a></button>	
+				</td>
+			</tr>
+		</div>
+	{% endif %}
+</div>
+</span>
+
+<br>					
+{% endblock content %}

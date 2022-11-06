@@ -12,6 +12,9 @@ from wtforms import StringField, SubmitField, TextAreaField, IntegerField, Radio
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, Length, Email
 
+import numpy as np
+import cv2
+
 from ecommerce import mysql
 from ecommerce.models import *
 
@@ -95,6 +98,17 @@ def is_valid(email, password):
     return False
 
 
+def is_valid_seller(email, password):
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT email, password FROM seller")
+    userData = cur.fetchall()
+    cur.close()
+    for row in userData:
+        if row['email'] == email and row['password'] == hashlib.md5(password.encode()).hexdigest():
+            print("password: " + hashlib.md5(password.encode()).hexdigest())
+            return True
+    return False
+
 def getLoginUserDetails():
     productCountinCartForGivenUser = 0
 
@@ -158,6 +172,30 @@ def extractAndPersistUserDataFromForm(request):
         return "Registration failed"
     return "Registered Successfully"
 
+def extractAndPersistSellerDataFromForm(request):
+    password = request.form['password']
+    email = request.form['email']
+    name = request.form['name']
+    address = request.form['address']
+    zipcode = request.form['zipcode']
+    city = request.form['city']
+    state = request.form['state']
+    country = request.form['country']
+    phone = request.form['phone']
+    PAN = request.form['PAN']
+    UID = request.form['UID']
+
+    seller = Seller(name=name, password=hashlib.md5(password.encode()).hexdigest(), address=address,
+                city=city, state=state, country=country, zipcode=zipcode, email=email, phone=phone,
+                PAN=PAN, UID=UID)
+
+    try:
+        db.session.add(seller)
+        db.session.flush()
+        db.session.commit()
+    except exc.SQLAlchemyError:
+        return "Registration failed"
+    return "Registered Successfully"
 
 def isUserLoggedIn():
     if 'email' not in session:
@@ -172,6 +210,8 @@ def isUserAdmin():
         # ProductCategory.query.filter_by(productid=product.productid).first()
         userId = User.query.with_entities(User.userid).filter(User.email == session['email']).first()
         currentUser = User.query.get_or_404(userId)
+        print("USER ADMIN VALIDATION.")
+        print(currentUser.isadmin)
         return currentUser.isadmin
 
 def userRecommendations():
@@ -408,3 +448,51 @@ def persistAuctionToCart(productId, userId, bidPrice):
     db.session.commit()
     
     return
+
+
+def getSellerLoginDetails():
+    if 'email' not in session:
+        loggedIn = False
+        SellerName = ''
+    else:
+        loggedIn = True
+        SellerName = Seller.query.with_entities(Seller.name).filter(
+            Seller.email == session['email']).first()
+        SellerName = SellerName[0]
+    return (loggedIn, SellerName)
+
+
+class addSellerProductForm(FlaskForm):
+    category = SelectField('Category:', coerce=int, id='select_category')
+    sku = StringField('Product SKU:', validators=[DataRequired()])
+    subProductId = StringField('Sub Product Id:', validators=[DataRequired()])
+    productName = StringField('Product Name:', validators=[DataRequired()])
+    productDescription = TextAreaField('Product Description:', validators=[DataRequired()])
+    weight = StringField('Weight:', validators=[DataRequired()])
+    productPrice = FloatField('Product Price:', validators=[DataRequired()])
+    productQuantity = IntegerField('Product Quantity:', validators=[DataRequired()])
+    image = StringField('Product Image URL', validators=[DataRequired()])
+    certificate = StringField('Certificate Image URL', validators=[DataRequired()])
+    message = StringField('Bad')
+    submit = SubmitField('Upload Product')
+
+def calcHistogram(image):
+    image = cv2.imread(image)
+    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    histogram = cv2.calcHist([gray_image], [0],
+						None, [256], [0, 256])
+    return histogram
+
+def validateCert(image, histogram):
+    histogram1 = calcHistogram(image)
+    i = c1 = 0
+    while i<len(histogram) and i<len(histogram1):
+        c1+=(histogram[i]-histogram1[i])**2
+        i+= 1
+    c1 = np.sqrt(c1)
+    distance = c1[0]
+    print("Distance: ")
+    print(distance)
+    if distance > 15000:
+        return 0
+    return 1
