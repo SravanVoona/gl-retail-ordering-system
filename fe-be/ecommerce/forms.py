@@ -400,6 +400,10 @@ def addOrderedproducts(userId, orderid, status):
 
 def removeordprodfromcart(userId):
     userid = userId
+    cart = Cart.query.with_entities(Cart.productid, Cart.subproductid, Cart.quantity).filter(Cart.userid == userId)
+    
+    for item in cart:
+        db.session.query(Product).filter(Product.productid == item.productid).update({'stock': Product.stock - item.quantity})
     db.session.query(Cart).filter(Cart.userid == userid).delete()
     db.session.commit()
 
