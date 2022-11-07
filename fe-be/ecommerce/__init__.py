@@ -18,8 +18,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://' + db2['mysql_user'] + ':' + db2['mysql_password'] + '@' + db2['mysql_host'] + '/' + db2['mysql_db']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_MAX_OVERFLOW'] = 0
+app.config['SQLALCHEMY_MAX_OVERFLOW'] = 20
 app.config['SQLALCHEMY_POOL_SIZE'] = 20
+
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 app.secret_key = 'random string'
