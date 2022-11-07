@@ -1,2 +1,2 @@
 # grocart
-Analytics test
+# Analytics tracking code added to HTML pages
