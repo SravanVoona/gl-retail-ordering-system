@@ -80,7 +80,7 @@ function validatePAN(){
 }
 
 function validateUID(){
-    if (/^[0-9]{12}$/.test(document.getElementById("reguid").value)) {
+    if (/^[0-9]{16}$/.test(document.getElementById("reguid").value)) {
         return (true)
     }
     alert("You have entered an invalid UID!")

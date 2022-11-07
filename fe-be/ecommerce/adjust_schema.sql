@@ -22,14 +22,14 @@ CREATE TABLE `seller` (
   `email` varchar(120) NOT NULL,
   `phone` varchar(20) NOT NULL,
   `PAN` varchar(20) NOT NULL,
-  `UID` decimal(12,0) NOT NULL, 
+  `UID` decimal(16,0) NOT NULL, 
   PRIMARY KEY (`id`)
 );
 
-delete from grocart.category where categoryid < 9;
+delete from category where categoryid < 9;
 
 
-insert into grocart.seller values
+insert into seller values
 (201, 'BK_Retail' , 'e19d5cd5af0378da05f63f891c7467af' , 'bk_retail@gmail.com' , '371 MDR' , 'India' , 'Goa' , 'Mapusa' ,455455, 5602962331, 'HNXVH1363A' ,652201991482), 
 (202, 'WU_Retail' , 'dd06000910b1e069867d91aee2b10a4c' , 'wu_retail@gmail.com' , '826 TIG' , 'India' , 'Goa' , 'Mapusa' ,455455, 5481712982, 'OJUAB0216F' ,655904597729), 
 (203, 'KK_Retail' , '84a41085b40cf216a709a558b42c47b2' , 'kk_retail@gmail.com' , '912 NID' , 'India' , 'Goa' , 'Mapusa' ,455455, 4836706078, 'ZMOLF9358L' ,518617558423), 
