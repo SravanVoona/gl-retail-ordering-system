@@ -1,8 +1,19 @@
+# local connection
+#mongodb:
+#  connection_string: 'mongodb://localhost:27017/'
+#  database: 'bidding_engine'
+#  tables: ['auction', 'bidding']
+#bidding_service:
+#  interval: 5
+#ecommerce:
+#  url: 'http://127.0.0.1:5000/'
+
+# remote bidding engine connection
 mongodb:
-  connection_string: 'mongodb://localhost:27017/'
+  connection_string: 'mongodb://54.211.212.194:38018/'
   database: 'bidding_engine'
   tables: ['auction', 'bidding']
 bidding_service:
   interval: 5
-ecommerce: 
-  url: 'http://127.0.0.1:5000/'
+ecommerce:
+  url: 'http://44.211.129.47:5000/'
