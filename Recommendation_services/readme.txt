@@ -1,4 +1,3 @@
-Download cosine_sim(4).sav file from "https://drive.google.com/drive/folders/1vxxloeDwndT5eKy2ltH1U4bg9pf3yrQH"
-Rename it as cosine_sim.sav and save it in this folders
-As the file size is huge we could not push to git
-Hello, testing this line.
+Download cosine_sim.sav file from "https://drive.google.com/drive/folders/1VKvjfM65sQMoR5x26QLZV5P6kw_aZi3x"
+Save it in this folder
+As the file size is huge, we could not push to git
