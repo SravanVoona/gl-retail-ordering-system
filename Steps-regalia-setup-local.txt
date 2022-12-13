@@ -35,8 +35,7 @@ Verify from SQL workbench that the tables are created in the regalia database (e
 Data Input:
 --> Go to fe-be/ecommerce folder
        ---> Copy contents of "regalia_data_input.sql" and put on a mysql workbench query window and execute it
-	---> Copy contents of "adjust_schema_new.sql" and put on a mysql workbench query window and execute it
-       
+	
 Running the Application:
 ---> Go to bidding_engine folder 
        ---> run "python run.py"
