@@ -1,0 +1,56 @@
+Steps to get regalia working locally:
+
+Codebase:
+--> Clone git project: https://github.com/SravanVoona/gl-retail-ordering-system.git
+--> Branch: https://github.com/SravanVoona/gl-retail-ordering-system/tree/Version0_Develop
+
+Installations:
+--> Install mysql server and create "regalia" database
+--> Go to fe-be folder
+       ---> run "pip install -r requirements.txt"
+--> Go to Recommendation services
+       ---> run "pip install -r requirements.txt"
+--> Install mongodb server  (on windows the mongodb service is started by default)
+--> Go to bidding_engine folder
+       ---> run "pip install -r requirements.txt"
+
+
+Config changes: Ensure the local connection code is uncommented and remote is commented in both below config files
+--> Go to fe-be folder
+       ---> Change config.yaml file to add mysql account details like password, host etc. 
+--> Go to bidding_engine folder
+       ---> Change config.yaml file and make mongodb connection string if needed -not needed in most of the cases (You could use default conn string - connection_string: 'mongodb://localhost:27017/')
+
+ 
+Downloads:
+--> Go to Recommendation Service folder
+      ---> Go through readme file to download cosine_sim.sav file and save it in the same folder
+(you can also use the the cosine_sim.sav from "https://drive.google.com/drive/folders/1VKvjfM65sQMoR5x26QLZV5P6kw_aZi3x")
+
+Creating tables in the database:
+---> Go to fe-be/ecommerce folder 
+       ---> run "python run.py"
+Verify from SQL workbench that the tables are created in the regalia database (ensure refresh is done)
+
+Data Input:
+--> Go to fe-be/ecommerce folder
+       ---> Copy contents of "regalia_data_input.sql" and put on a mysql workbench query window and execute it
+	
+Running the Application:
+---> Go to bidding_engine folder 
+       ---> run "python run.py"
+Open browser to http://192.168.29.6:7200/
+You should see "Running Bidding Service" on the screen
+---> Go to Recommendation Services folder
+       ---> run "uvicorn app1:app --host 0.0.0.0 --port 8000"
+Open browser to http://localhost:8000/ 
+You should see "{"GFG Example":"FastAPI"}" on the screen
+
+---> Go to ecommerce folder 
+       ---> run "python run.py"
+Open browser to http://localhost:5000/ 
+This will open the application and you should see the home screen
+
+To access Seller page, logout of the home screen and http://localhost:5000/seller
+To access Admin page, http://localhost:5000/admin. You need to be an admin to access admin functions. For now, this has to be a backend table update: user.isadmin=1
+

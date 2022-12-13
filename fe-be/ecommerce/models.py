@@ -140,7 +140,7 @@ class Seller(db.Model):
     email = db.Column(db.String(120), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
     PAN = db.Column(db.String(20), nullable=False)
-    UID = db.Column(db.DECIMAL, nullable=False)
+    UID = db.Column(db.String(20), nullable=False)
 
     def __repr__(self):
         return f"Seller('{self.id}', '{self.name}', '{self.password}',  \
