@@ -1,25 +1,25 @@
 ##local database connection
-#mysql_host: 'localhost'
-#mysql_user: 'admin'
-#mysql_password: 'mysql_admin'
-#mysql_db: 'grocart'
+mysql_host: 'localhost'
+mysql_user: 'admin'
+mysql_password: 'mysql_admin'
+mysql_db: 'regalia'
 #
 ##local connections
-#recommendationServiceUrl : 'http://127.0.0.1:8000/predict'
-#userProductRecommendationServiceUrl : 'http://127.0.0.1:8000/predictuser'
-#biddingEngineUrl: 'http://127.0.0.1:7200'
+recommendationServiceUrl : 'http://127.0.0.1:8000/predict'
+userProductRecommendationServiceUrl : 'http://127.0.0.1:8000/predictuser'
+biddingEngineUrl: 'http://127.0.0.1:7200'
 
 
 #remote -- rds connection
-mysql_host: 'database-1.cc22ncp9mjig.us-east-1.rds.amazonaws.com'
-mysql_user: 'admin'
-mysql_password: 'admin123'
-mysql_db: 'regalia'
+#mysql_host: 'database-1.cc22ncp9mjig.us-east-1.rds.amazonaws.com'
+#mysql_user: 'admin'
+#mysql_password: 'admin123'
+#mysql_db: 'regalia'
 
 #remote -- ec2 instance connections
-recommendationServiceUrl : 'http://54.174.221.73:8000/predict'
-userProductRecommendationServiceUrl : 'http://54.174.221.73:8000/predictuser'
-biddingEngineUrl: 'http://54.211.212.194:7200'
+#recommendationServiceUrl : 'http://54.174.221.73:8000/predict'
+#userProductRecommendationServiceUrl : 'http://54.174.221.73:8000/predictuser'
+#biddingEngineUrl: 'http://54.211.212.194:7200'
 
 
 # Old Project 
